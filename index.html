@@ -1,0 +1,893 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Sistem Keuangan Kas 17 Agustus</title>
+    <!-- Font Plus Jakarta Sans -->
+    <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
+    <style>
+        :root {
+            /* Tema Merah Putih Modern (Dark Mode Glossy) */
+            --bg-gradient: radial-gradient(circle at 50% 0%, #3a090b 0%, #170406 50%, #0a0203 100%);
+            --card-bg: rgba(26, 9, 12, 0.65);
+            --card-border: rgba(255, 255, 255, 0.08);
+            --card-border-glow: rgba(239, 68, 68, 0.25);
+            --input-bg: rgba(0, 0, 0, 0.35);
+            --input-border: rgba(255, 255, 255, 0.12);
+            --text-main: #f8fafc;
+            --text-sub: #94a3b8;
+            --red-accent: #ef4444;
+            --red-glow: rgba(239, 68, 68, 0.35);
+            --green-accent: #10b981;
+            --green-glow: rgba(16, 185, 129, 0.35);
+            --shadow-xl: 0 20px 40px -15px rgba(0, 0, 0, 0.7), inset 0 1px 0 rgba(255, 255, 255, 0.1);
+            --shadow-card: 0 10px 30px -5px rgba(0, 0, 0, 0.5), inset 0 1px 0 rgba(255, 255, 255, 0.05);
+            --glass-blur: blur(16px);
+        }
+
+        body.light {
+            /* Tema Merah Putih Modern (Light Mode Soft - Mode Siang) */
+            --bg-gradient: radial-gradient(circle at 50% 0%, #ffe4e6 0%, #f1f5f9 60%, #e2e8f0 100%);
+            --card-bg: rgba(255, 255, 255, 0.85);
+            --card-border: rgba(255, 255, 255, 0.9);
+            --card-border-glow: rgba(225, 29, 72, 0.2);
+            --input-bg: rgba(255, 255, 255, 0.95);
+            --input-border: rgba(203, 213, 225, 0.8);
+            --text-main: #0f172a;
+            --text-sub: #64748b;
+            --red-accent: #e11d48;
+            --red-glow: rgba(225, 29, 72, 0.25);
+            --green-accent: #059669;
+            --green-glow: rgba(5, 150, 105, 0.25);
+            --shadow-xl: 0 20px 40px -15px rgba(225, 29, 72, 0.08), inset 0 1px 0 rgba(255, 255, 255, 0.9);
+            --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.05), inset 0 1px 0 #ffffff;
+        }
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+        }
+
+        body {
+            background: var(--bg-gradient);
+            background-attachment: fixed;
+            color: var(--text-main);
+            min-height: 100vh;
+            padding: 32px 16px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        /* GLASS PANEL BASE */
+        .glass-panel {
+            background: var(--card-bg);
+            backdrop-filter: var(--glass-blur);
+            -webkit-backdrop-filter: var(--glass-blur);
+            border: 1px solid var(--card-border);
+            border-radius: 24px;
+            box-shadow: var(--shadow-card);
+            position: relative;
+            overflow: hidden;
+        }
+
+        .glass-panel::before {
+            content: '';
+            position: absolute;
+            top: 0; left: 0; right: 0;
+            height: 1px;
+            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
+        }
+
+        /* LOGIN CONTAINER */
+        .login-card {
+            padding: 40px 32px;
+            width: 100%;
+            max-width: 420px;
+            text-align: center;
+            box-shadow: var(--shadow-xl);
+            border-color: var(--card-border-glow);
+        }
+
+        .login-card h2 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            margin-bottom: 6px;
+            background: linear-gradient(135deg, #9f1239 0%, #e11d48 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        body:not(.light) .login-card h2 {
+            background: linear-gradient(135deg, #ffffff 0%, #fca5a5 100%);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+        }
+
+        .login-card p {
+            color: var(--text-sub);
+            font-size: 0.88rem;
+            margin-bottom: 28px;
+        }
+
+        .form-group-login {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            margin-bottom: 24px;
+            text-align: left;
+        }
+
+        .form-group-login label {
+            font-size: 0.8rem;
+            font-weight: 700;
+            color: var(--text-sub);
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+        }
+
+        /* MAIN APP CONTAINER */
+        .app-container {
+            width: 100%;
+            max-width: 950px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        /* HEADER CARD */
+        .header-card {
+            padding: 32px 24px;
+            text-align: center;
+            background: linear-gradient(180deg, rgba(225, 29, 72, 0.08) 0%, rgba(0, 0, 0, 0) 100%);
+            border-color: var(--card-border-glow);
+        }
+
+        .header-card h1 {
+            font-size: 1.6rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+            margin-top: 8px;
+            margin-bottom: 8px;
+        }
+
+        .user-badge {
+            position: absolute;
+            top: 18px; left: 18px;
+            background: rgba(0, 0, 0, 0.05);
+            border: 1px solid var(--card-border);
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            letter-spacing: 0.03em;
+        }
+
+        .btn-logout {
+            position: absolute;
+            top: 18px; right: 18px;
+            background: rgba(225, 29, 72, 0.1);
+            color: var(--red-accent);
+            border: 1px solid rgba(225, 29, 72, 0.25);
+            padding: 6px 14px;
+            border-radius: 30px;
+            font-size: 0.75rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-logout:hover {
+            background: var(--red-accent);
+            color: white;
+            box-shadow: 0 0 15px var(--red-glow);
+        }
+
+        .countdown-box {
+            display: inline-block;
+            background: rgba(225, 29, 72, 0.1);
+            border: 1px solid rgba(225, 29, 72, 0.3);
+            color: var(--red-accent);
+            padding: 8px 20px;
+            border-radius: 30px;
+            font-weight: 800;
+            font-size: 1.15rem;
+            margin-top: 10px;
+            font-variant-numeric: tabular-nums;
+        }
+
+        /* DASHBOARD GRID CARDS BERWARNA */
+        .stats-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 16px;
+        }
+
+        .stat-card {
+            padding: 20px;
+            border-radius: 20px;
+            position: relative;
+            box-shadow: 0 12px 30px rgba(0, 0, 0, 0.08);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+        }
+
+        .stat-card p {
+            font-size: 0.78rem;
+            font-weight: 700;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            margin-bottom: 8px;
+        }
+
+        .stat-card h3 {
+            font-size: 1.55rem;
+            font-weight: 800;
+            letter-spacing: -0.02em;
+        }
+
+        /* 1. SISA SALDO (Emerald Green) */
+        .stat-card.saldo {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.12) 0%, rgba(5, 150, 105, 0.04) 100%);
+            border: 1px solid rgba(16, 185, 129, 0.35);
+        }
+        .stat-card.saldo p { color: #059669; }
+        .stat-card.saldo h3 { color: #047857; }
+
+        body:not(.light) .stat-card.saldo {
+            background: linear-gradient(135deg, rgba(16, 185, 129, 0.22) 0%, rgba(6, 78, 59, 0.15) 100%);
+            border-color: rgba(16, 185, 129, 0.4);
+        }
+        body:not(.light) .stat-card.saldo p { color: #34d399; }
+        body:not(.light) .stat-card.saldo h3 { color: #10b981; text-shadow: 0 0 15px rgba(16, 185, 129, 0.3); }
+
+        /* 2. TOTAL PEMASUKAN (Royal Blue) */
+        .stat-card.masuk {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.12) 0%, rgba(37, 99, 235, 0.04) 100%);
+            border: 1px solid rgba(59, 130, 246, 0.35);
+        }
+        .stat-card.masuk p { color: #2563eb; }
+        .stat-card.masuk h3 { color: #1d4ed8; }
+
+        body:not(.light) .stat-card.masuk {
+            background: linear-gradient(135deg, rgba(59, 130, 246, 0.22) 0%, rgba(30, 58, 138, 0.15) 100%);
+            border-color: rgba(59, 130, 246, 0.4);
+        }
+        body:not(.light) .stat-card.masuk p { color: #60a5fa; }
+        body:not(.light) .stat-card.masuk h3 { color: #3b82f6; text-shadow: 0 0 15px rgba(59, 130, 246, 0.3); }
+
+        /* 3. TOTAL PENGELUARAN (Ruby Red) */
+        .stat-card.keluar {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(225, 29, 72, 0.04) 100%);
+            border: 1px solid rgba(239, 68, 68, 0.35);
+        }
+        .stat-card.keluar p { color: #dc2626; }
+        .stat-card.keluar h3 { color: #b91c1c; }
+
+        body:not(.light) .stat-card.keluar {
+            background: linear-gradient(135deg, rgba(239, 68, 68, 0.22) 0%, rgba(136, 19, 55, 0.15) 100%);
+            border-color: rgba(239, 68, 68, 0.4);
+        }
+        body:not(.light) .stat-card.keluar p { color: #fca5a5; }
+        body:not(.light) .stat-card.keluar h3 { color: #ef4444; text-shadow: 0 0 15px rgba(239, 68, 68, 0.3); }
+
+        /* 4. JUMLAH WARGA (Indigo Purple) */
+        .stat-card.warga {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, rgba(124, 58, 237, 0.04) 100%);
+            border: 1px solid rgba(139, 92, 246, 0.35);
+        }
+        .stat-card.warga p { color: #7c3aed; }
+        .stat-card.warga h3 { color: #6d28d9; }
+
+        body:not(.light) .stat-card.warga {
+            background: linear-gradient(135deg, rgba(139, 92, 246, 0.22) 0%, rgba(76, 29, 149, 0.15) 100%);
+            border-color: rgba(139, 92, 246, 0.4);
+        }
+        body:not(.light) .stat-card.warga p { color: #c4b5fd; }
+        body:not(.light) .stat-card.warga h3 { color: #a78bfa; text-shadow: 0 0 15px rgba(139, 92, 246, 0.3); }
+
+        .stat-card:hover {
+            transform: translateY(-4px);
+        }
+
+        /* TABS */
+        .tabs {
+            display: flex;
+            background: var(--input-bg);
+            padding: 5px;
+            border-radius: 16px;
+            border: 1px solid var(--input-border);
+            gap: 6px;
+            margin-bottom: 24px;
+        }
+
+        .tab-btn {
+            flex: 1;
+            padding: 12px;
+            border: none;
+            background: transparent;
+            color: var(--text-sub);
+            font-weight: 700;
+            border-radius: 12px;
+            cursor: pointer;
+            font-size: 0.88rem;
+        }
+
+        .tab-btn.active {
+            background: var(--card-bg);
+            color: var(--text-main);
+            border: 1px solid var(--card-border);
+            box-shadow: 0 4px 15px rgba(0,0,0,0.05);
+        }
+
+        /* FORMS */
+        .form-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr auto;
+            gap: 12px;
+            margin-bottom: 24px;
+        }
+
+        @media (max-width: 640px) {
+            .form-grid { grid-template-columns: 1fr; }
+        }
+
+        input {
+            width: 100%;
+            padding: 14px 16px;
+            border-radius: 12px;
+            border: 1px solid var(--input-border);
+            background: var(--input-bg);
+            color: var(--text-main);
+            font-size: 0.92rem;
+            outline: none;
+        }
+
+        input:focus {
+            border-color: var(--red-accent);
+            box-shadow: 0 0 0 3px var(--red-glow);
+        }
+
+        button.btn-primary {
+            background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
+            color: white;
+            border: 1px solid rgba(255, 255, 255, 0.3);
+            padding: 14px 24px;
+            border-radius: 12px;
+            font-weight: 700;
+            cursor: pointer;
+            box-shadow: 0 6px 20px var(--red-glow);
+        }
+
+        button.btn-primary:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 8px 25px var(--red-glow);
+        }
+
+        /* TOOLBAR */
+        .toolbar {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            gap: 14px;
+            margin-bottom: 20px;
+            flex-wrap: wrap;
+        }
+
+        .search-box { flex: 1; min-width: 220px; }
+
+        .btn-outline {
+            background: var(--input-bg);
+            border: 1px solid var(--input-border);
+            color: var(--text-main);
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-outline:hover { background: var(--card-bg); }
+
+        .btn-danger-light {
+            background: rgba(225, 29, 72, 0.1);
+            color: var(--red-accent);
+            border: 1px solid rgba(225, 29, 72, 0.25);
+            padding: 10px 16px;
+            border-radius: 10px;
+            font-size: 0.85rem;
+            font-weight: 700;
+            cursor: pointer;
+        }
+
+        .btn-danger-light:hover { background: var(--red-accent); color: white; }
+
+        /* TABLE */
+        .table-container {
+            overflow-x: auto;
+            border-radius: 16px;
+            border: 1px solid var(--input-border);
+            background: var(--input-bg);
+        }
+
+        table {
+            width: 100%;
+            border-collapse: collapse;
+            text-align: left;
+            font-size: 0.9rem;
+        }
+
+        th {
+            background: rgba(0, 0, 0, 0.03);
+            color: var(--text-sub);
+            padding: 14px 18px;
+            font-weight: 700;
+            font-size: 0.8rem;
+            text-transform: uppercase;
+            letter-spacing: 0.05em;
+            border-bottom: 1px solid var(--input-border);
+        }
+
+        td {
+            padding: 16px 18px;
+            border-bottom: 1px solid var(--input-border);
+        }
+
+        tr:last-child td { border-bottom: none; }
+
+        .btn-del {
+            background: rgba(225, 29, 72, 0.1);
+            color: var(--red-accent);
+            border: 1px solid rgba(225, 29, 72, 0.2);
+            padding: 6px 12px;
+            border-radius: 8px;
+            cursor: pointer;
+            font-size: 0.78rem;
+            font-weight: 700;
+        }
+
+        .btn-del:hover { background: var(--red-accent); color: white; }
+
+        /* FLOATING THEME TOGGLE */
+        .theme-toggle {
+            position: fixed;
+            bottom: 24px; left: 24px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-main);
+            border-radius: 50px;
+            padding: 10px 18px;
+            font-weight: 700;
+            font-size: 0.85rem;
+            cursor: pointer;
+            box-shadow: var(--shadow-xl);
+            backdrop-filter: var(--glass-blur);
+            z-index: 100;
+        }
+
+        /* TOAST & LOADER */
+        #toast {
+            position: fixed;
+            bottom: 24px; right: 24px;
+            background: var(--card-bg);
+            border: 1px solid var(--card-border-glow);
+            color: var(--text-main);
+            padding: 14px 24px;
+            border-radius: 14px;
+            box-shadow: var(--shadow-xl);
+            display: none;
+            z-index: 1000;
+            font-size: 0.9rem;
+            font-weight: 600;
+            backdrop-filter: var(--glass-blur);
+        }
+
+        .loader-overlay {
+            position: fixed; inset: 0;
+            background: rgba(0, 0, 0, 0.4);
+            backdrop-filter: blur(8px);
+            display: flex; justify-content: center; align-items: center;
+            z-index: 999; color: white; font-weight: 700;
+        }
+
+        .hidden { display: none !important; }
+    </style>
+</head>
+<body class="light">
+
+<div id="loader" class="loader-overlay hidden">
+    <span>⏳ Memuat & Menyinkronkan Cloud...</span>
+</div>
+
+<div id="toast"></div>
+
+<button class="theme-toggle" onclick="toggleTheme()" title="Ganti Tema">
+    <span id="theme-icon">☀️ Mode Siang</span>
+</button>
+
+<!-- LOGIN VIEW -->
+<div id="view-login" class="glass-panel login-card">
+    <h2>🇮🇩 Kas 17 Agustus</h2>
+    <p>Sistem Informasi Iuran & Pengeluaran Lapangan</p>
+
+    <div class="form-group-login">
+        <div>
+            <label>Username</label>
+            <input type="text" id="login-user" placeholder="Masukkan username">
+        </div>
+        <div>
+            <label>Password</label>
+            <input type="password" id="login-pass" placeholder="Masukkan password">
+        </div>
+    </div>
+
+    <button class="btn-primary" style="width: 100%;" onclick="handleLogin()">Masuk Ke Sistem</button>
+</div>
+
+<!-- MAIN DASHBOARD VIEW -->
+<div id="view-app" class="app-container hidden">
+    <!-- Header Card -->
+    <div class="glass-panel header-card">
+        <div id="user-badge" class="user-badge">Role: -</div>
+        <button class="btn-logout" onclick="handleLogout()">Keluar 🚪</button>
+        
+        <h1>🇮🇩 KAS IURAN 17 AGUSTUS</h1>
+        <div id="countdown" class="countdown-box">H-00 00:00:00</div>
+    </div>
+
+    <!-- Ringkasan Saldo (4 Kartu Berwarna) -->
+    <div class="stats-grid">
+        <div class="stat-card saldo">
+            <p>Sisa Saldo Kas</p>
+            <h3 id="stat-saldo">Rp 0</h3>
+        </div>
+        <div class="stat-card masuk">
+            <p>Total Pemasukan</p>
+            <h3 id="stat-masuk">Rp 0</h3>
+        </div>
+        <div class="stat-card keluar">
+            <p>Total Pengeluaran</p>
+            <h3 id="stat-keluar">Rp 0</h3>
+        </div>
+        <div class="stat-card warga">
+            <p>Warga Ikut Iuran</p>
+            <h3 id="stat-warga">0 Orang</h3>
+        </div>
+    </div>
+
+    <!-- Panel Utama -->
+    <div class="glass-panel" style="padding: 28px;">
+        <!-- Navigasi Tab -->
+        <div class="tabs">
+            <button class="tab-btn active" onclick="switchTab('masuk')">📥 Pemasukan (Iuran)</button>
+            <button class="tab-btn" onclick="switchTab('keluar')">📤 Pengeluaran Lapangan</button>
+        </div>
+
+        <!-- Form Pemasukan (Khusus Editor) -->
+        <div id="form-masuk" class="form-grid role-editor-only">
+            <input type="text" id="in-nama" placeholder="Nama Warga (cth: Pak RT 02)">
+            <input type="number" id="in-jumlah-masuk" placeholder="Nominal (Rp)">
+            <button class="btn-primary" onclick="tambahPemasukan()">+ Tambah Iuran</button>
+        </div>
+
+        <!-- Form Pengeluaran (Khusus Editor) -->
+        <div id="form-keluar" class="form-grid hidden role-editor-only">
+            <input type="text" id="in-ket" placeholder="Keterangan Belanja (cth: Beli Bambu)">
+            <input type="number" id="in-jumlah-keluar" placeholder="Nominal (Rp)">
+            <button class="btn-primary" onclick="tambahPengeluaran()" style="background: linear-gradient(135deg, #dc2626 0%, #991b1b 100%);">+ Tambah Pengeluaran</button>
+        </div>
+
+        <!-- Toolbar -->
+        <div class="toolbar">
+            <div class="search-box">
+                <input type="text" id="search-input" placeholder="🔍 Cari transaksi..." oninput="renderData()">
+            </div>
+            <div class="action-btns">
+                <button class="btn-outline" onclick="exportCSV()">📊 Export CSV</button>
+                <button id="btn-clear-exp" class="btn-danger-light hidden role-editor-only" onclick="hapusSemuaPengeluaran()">🧹 Reset Pengeluaran</button>
+            </div>
+        </div>
+
+        <!-- Tabel Data -->
+        <div class="table-container">
+            <table>
+                <thead>
+                    <tr>
+                        <th>Tanggal</th>
+                        <th id="th-deskripsi">Nama Warga</th>
+                        <th>Jumlah</th>
+                        <th id="th-action" class="role-editor-only" style="width: 80px; text-align: center;">Aksi</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <!-- Data Dinamis -->
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+
+<script>
+// === TEMPATKAN URL GOOGLE APPS SCRIPT ANDA DI SINI ===
+const API_URL = "PASTE_URL_WEB_APP_GOOGLE_KAMU_DISINI";
+
+// KONFIGURASI AKUN LOGIN
+const USERS = {
+    "admin": { pass: "210726", role: "editor", name: "PanitiaRT06" },
+    "wargart06": { pass: "rt06bisa", role: "viewer", name: "WargaRT06" }
+};
+
+let currentUser = null;
+let state = {
+    currentTab: 'masuk',
+    riwayat: [],
+    pengeluaran: []
+};
+
+// --- INISIALISASI ---
+window.onload = () => {
+    document.body.classList.add("light"); // Default Mode Siang
+    startCountdown();
+    checkSession();
+};
+
+function checkSession() {
+    const savedUser = sessionStorage.getItem("kas_user");
+    if (savedUser && USERS[savedUser]) {
+        currentUser = USERS[savedUser];
+        showAppView();
+    } else {
+        showLoginView();
+    }
+}
+
+function handleLogin() {
+    const userIn = document.getElementById("login-user").value.trim();
+    const passIn = document.getElementById("login-pass").value.trim();
+
+    if (USERS[userIn] && USERS[userIn].pass === passIn) {
+        currentUser = USERS[userIn];
+        sessionStorage.setItem("kas_user", userIn);
+        showToast("✅ Login Berhasil: " + currentUser.name);
+        showAppView();
+    } else {
+        alert("❌ Username atau Password salah!");
+    }
+}
+
+function handleLogout() {
+    sessionStorage.removeItem("kas_user");
+    currentUser = null;
+    showLoginView();
+}
+
+function showLoginView() {
+    document.getElementById("view-login").classList.remove("hidden");
+    document.getElementById("view-app").classList.add("hidden");
+}
+
+function showAppView() {
+    document.getElementById("view-login").classList.add("hidden");
+    document.getElementById("view-app").classList.remove("hidden");
+    
+    document.getElementById("user-badge").innerText = `Role: ${currentUser.name}`;
+
+    const isEditor = currentUser.role === 'editor';
+    document.querySelectorAll(".role-editor-only").forEach(el => {
+        el.style.display = isEditor ? "" : "none";
+    });
+
+    fetchCloudData();
+}
+
+function showToast(msg) {
+    const t = document.getElementById("toast");
+    t.innerText = msg;
+    t.style.display = "block";
+    setTimeout(() => { t.style.display = "none"; }, 3000);
+}
+
+function showLoader(show) {
+    document.getElementById("loader").classList.toggle("hidden", !show);
+}
+
+function toggleTheme() {
+    document.body.classList.toggle("light");
+    const isLight = document.body.classList.contains("light");
+    document.getElementById("theme-icon").innerText = isLight ? "☀️ Mode Siang" : "🌙 Mode Malam";
+}
+
+// --- COUNTDOWN ---
+function startCountdown() {
+    const update = () => {
+        let now = new Date();
+        let target = new Date(now.getFullYear(), 7, 17);
+        if (now > target) target = new Date(now.getFullYear() + 1, 7, 17);
+
+        let diff = target - now;
+        let d = Math.floor(diff / 86400000);
+        let h = Math.floor((diff / 3600000) % 24);
+        let m = Math.floor((diff / 60000) % 60);
+        let s = Math.floor((diff / 1000) % 60);
+
+        const pad = num => String(num).padStart(2, '0');
+        document.getElementById("countdown").innerText = `H-${d} ${pad(h)}:${pad(m)}:${pad(s)}`;
+    };
+    update();
+    setInterval(update, 1000);
+}
+
+// --- TABS NAVIGASI ---
+function switchTab(tab) {
+    state.currentTab = tab;
+    document.querySelectorAll(".tab-btn").forEach((btn, idx) => {
+        btn.classList.toggle("active", (tab === 'masuk' && idx === 0) || (tab === 'keluar' && idx === 1));
+    });
+
+    const isEditor = currentUser.role === 'editor';
+    document.getElementById("form-masuk").classList.toggle("hidden", tab !== 'masuk' || !isEditor);
+    document.getElementById("form-keluar").classList.toggle("hidden", tab !== 'keluar' || !isEditor);
+    document.getElementById("btn-clear-exp").classList.toggle("hidden", tab !== 'keluar' || !isEditor);
+    
+    document.getElementById("th-deskripsi").innerText = tab === 'masuk' ? "Nama Warga" : "Keterangan Belanja";
+
+    renderData();
+}
+
+// --- CLOUD SYNC ---
+async function fetchCloudData() {
+    showLoader(true);
+    try {
+        let res = await fetch(API_URL);
+        let data = await res.json();
+        state.riwayat = data.riwayat || [];
+        state.pengeluaran = data.pengeluaran || [];
+        renderData();
+    } catch (err) {
+        showToast("❌ Gagal terhubung ke server!");
+    } finally {
+        showLoader(false);
+    }
+}
+
+async function sendCloudPayload(payload) {
+    if (currentUser.role !== 'editor') {
+        return alert("⛔ Akses ditolak: Hanya akun Editor!");
+    }
+
+    showLoader(true);
+    try {
+        await fetch(API_URL, {
+            method: "POST",
+            mode: "no-cors",
+            headers: { "Content-Type": "application/json" },
+            body: JSON.stringify(payload)
+        });
+        showToast("⚡ Data berhasil tersimpan!");
+        setTimeout(fetchCloudData, 1200);
+    } catch (err) {
+        showToast("❌ Terjadi kesalahan pengiriman data!");
+        showLoader(false);
+    }
+}
+
+// --- EDITOR ACTIONS ---
+function tambahPemasukan() {
+    const namaEl = document.getElementById("in-nama");
+    const jmlEl = document.getElementById("in-jumlah-masuk");
+    if(!namaEl.value.trim() || Number(jmlEl.value) <= 0) return alert("Harap isi nama dan nominal yang benar!");
+
+    sendCloudPayload({
+        action: "tambah_iuran",
+        nama: namaEl.value.trim(),
+        jumlah: Number(jmlEl.value),
+        tanggal: new Date().toLocaleDateString('id-ID')
+    });
+
+    namaEl.value = ""; jmlEl.value = "";
+}
+
+function tambahPengeluaran() {
+    const ketEl = document.getElementById("in-ket");
+    const jmlEl = document.getElementById("in-jumlah-keluar");
+    if(!ketEl.value.trim() || Number(jmlEl.value) <= 0) return alert("Harap isi keterangan dan nominal pengeluaran!");
+
+    sendCloudPayload({
+        action: "tambah_pengeluaran",
+        keterangan: ketEl.value.trim(),
+        jumlah: Number(jmlEl.value),
+        tanggal: new Date().toLocaleDateString('id-ID')
+    });
+
+    ketEl.value = ""; jmlEl.value = "";
+}
+
+function hapusItem(id, type) {
+    if(!confirm("Yakin ingin menghapus item transaksi ini?")) return;
+    sendCloudPayload({ action: "Hapus", id: id, type: type });
+}
+
+function hapusSemuaPengeluaran() {
+    if(!confirm("⚠️ PERINGATAN: Seluruh data riwayat pengeluaran akan dikosongkan! Lanjutkan?")) return;
+    sendCloudPayload({ action: "hapus_semuji_pengeluaran" });
+}
+
+// --- RENDER & DISPLAY ---
+function formatRp(val) {
+    return "Rp " + Number(val).toLocaleString('id-ID');
+}
+
+function renderData() {
+    const searchKey = document.getElementById("search-input").value.toLowerCase();
+    const tbody = document.getElementById("table-body");
+    tbody.innerHTML = "";
+
+    const totalMasuk = state.riwayat.reduce((acc, item) => acc + item.jumlah, 0);
+    const totalKeluar = state.pengeluaran.reduce((acc, item) => acc + item.jumlah, 0);
+    
+    // Perhitungan Warga Unik (Mencegah nama ganda terhitung 2x)
+    const daftarWargaUnik = new Set(
+        state.riwayat
+            .map(item => item.nama ? item.nama.trim().toLowerCase() : "")
+            .filter(nama => nama !== "")
+    );
+    const totalWarga = daftarWargaUnik.size;
+
+    document.getElementById("stat-masuk").innerText = formatRp(totalMasuk);
+    document.getElementById("stat-keluar").innerText = formatRp(totalKeluar);
+    document.getElementById("stat-saldo").innerText = formatRp(totalMasuk - totalKeluar);
+    document.getElementById("stat-warga").innerText = totalWarga + " Orang";
+
+    const isEditor = currentUser && currentUser.role === 'editor';
+    const dataset = state.currentTab === 'masuk' ? state.riwayat : state.pengeluaran;
+    
+    const filtered = dataset.filter(item => {
+        const text = state.currentTab === 'masuk' ? item.nama : item.keterangan;
+        return text.toLowerCase().includes(searchKey) || item.tanggal.includes(searchKey);
+    });
+
+    const colSpan = isEditor ? 4 : 3;
+
+    if(filtered.length === 0) {
+        tbody.innerHTML = `<tr><td colspan="${colSpan}" style="text-align:center; color: var(--text-sub); padding:24px;">Tidak ada riwayat transaksi ditemukan</td></tr>`;
+        return;
+    }
+
+    filtered.forEach(item => {
+        const titleText = state.currentTab === 'masuk' ? item.nama : item.keterangan;
+        const tr = document.createElement("tr");
+        
+        let actionCell = isEditor ? `<td style="text-align:center;"><button class="btn-del" onclick="hapusItem('${item.id}', '${state.currentTab === 'masuk' ? 'riwayat' : 'pengeluaran'}')">Hapus</button></td>` : '';
+
+        tr.innerHTML = `
+            <td>${item.tanggal}</td>
+            <td><b>${titleText}</b></td>
+            <td style="font-weight:700;">${formatRp(item.jumlah)}</td>
+            ${actionCell}
+        `;
+        tbody.appendChild(tr);
+    });
+}
+
+// --- EXPORT CSV ---
+function exportCSV() {
+    let csv = "LAPORAN KEUANGAN KAS 17 AGUSTUS\n\n--- PEMASUKAN ---\nTanggal;Nama;Jumlah\n";
+    state.riwayat.forEach(v => { csv += `${v.tanggal};${v.nama};${v.jumlah}\n`; });
+
+    csv += "\n--- PENGELUARAN ---\nTanggal;Keterangan;Jumlah\n";
+    state.pengeluaran.forEach(v => { csv += `${v.tanggal};${v.keterangan};${v.jumlah}\n`; });
+
+    const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = `Laporan_Kas_17Agustus.csv`;
+    a.click();
+    URL.revokeObjectURL(url);
+}
+</script>
+</body>
+</html>
