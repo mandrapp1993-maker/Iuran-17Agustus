@@ -828,7 +828,7 @@ function renderData() {
     const totalMasuk = state.riwayat.reduce((acc, item) => acc + item.jumlah, 0);
     const totalKeluar = state.pengeluaran.reduce((acc, item) => acc + item.jumlah, 0);
     
-    // Perhitungan Warga Unik (Mencegah nama ganda terhitung 2x)
+    // Perhitungan Warga Unik
     const daftarWargaUnik = new Set(
         state.riwayat
             .map(item => item.nama ? item.nama.trim().toLowerCase() : "")
@@ -858,12 +858,24 @@ function renderData() {
 
     filtered.forEach(item => {
         const titleText = state.currentTab === 'masuk' ? item.nama : item.keterangan;
+        
+        // --- PERBAIKAN FORMAT TANGGAL DI SINI ---
+        let formattedDate = item.tanggal;
+        if (item.tanggal && item.tanggal.includes("GMT")) {
+            const d = new Date(item.tanggal);
+            formattedDate = d.toLocaleDateString('id-ID', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+
         const tr = document.createElement("tr");
         
         let actionCell = isEditor ? `<td style="text-align:center;"><button class="btn-del" onclick="hapusItem('${item.id}', '${state.currentTab === 'masuk' ? 'riwayat' : 'pengeluaran'}')">Hapus</button></td>` : '';
 
         tr.innerHTML = `
-            <td>${item.tanggal}</td>
+            <td>${formattedDate}</td>
             <td><b>${titleText}</b></td>
             <td style="font-weight:700;">${formatRp(item.jumlah)}</td>
             ${actionCell}
@@ -873,18 +885,61 @@ function renderData() {
 }
 
 // --- EXPORT CSV ---
+// --- EXPORT CSV (FIXED FORMAT TANGGAL & RINGKASAN) ---
 function exportCSV() {
-    let csv = "LAPORAN KEUANGAN KAS 17 AGUSTUS\n\n--- PEMASUKAN ---\nTanggal;Nama;Jumlah\n";
-    state.riwayat.forEach(v => { csv += `${v.tanggal};${v.nama};${v.jumlah}\n`; });
+    // Helper untuk merapikan format tanggal di CSV
+    const fixDate = (dateStr) => {
+        if (!dateStr) return "-";
+        if (dateStr.includes("GMT")) {
+            const d = new Date(dateStr);
+            return d.toLocaleDateString('id-ID', {
+                day: '2-digit',
+                month: '2-digit',
+                year: 'numeric'
+            });
+        }
+        return dateStr;
+    };
 
-    csv += "\n--- PENGELUARAN ---\nTanggal;Keterangan;Jumlah\n";
-    state.pengeluaran.forEach(v => { csv += `${v.tanggal};${v.keterangan};${v.jumlah}\n`; });
+    // Helper agar teks yang mengandung tanda baca tidak merusak struktur kolom CSV
+    const cleanCell = (str) => {
+        if (!str) return '""';
+        return `"${String(str).replace(/"/g, '""')}"`;
+    };
 
+    let csv = "LAPORAN KEUANGAN KAS 17 AGUSTUS\n\n";
+    
+    // 1. Bagian Pemasukan
+    csv += "--- PEMASUKAN ---\nTanggal;Nama;Jumlah (Rp)\n";
+    let totalMasuk = 0;
+    state.riwayat.forEach(v => {
+        const tgl = fixDate(v.tanggal);
+        csv += `${tgl};${cleanCell(v.nama)};${v.jumlah}\n`;
+        totalMasuk += Number(v.jumlah) || 0;
+    });
+
+    // 2. Bagian Pengeluaran
+    csv += "\n--- PENGELUARAN ---\nTanggal;Keterangan;Jumlah (Rp)\n";
+    let totalKeluar = 0;
+    state.pengeluaran.forEach(v => {
+        const tgl = fixDate(v.tanggal);
+        csv += `${tgl};${cleanCell(v.keterangan)};${v.jumlah}\n`;
+        totalKeluar += Number(v.jumlah) || 0;
+    });
+
+    // 3. Ringkasan Akhir
+    const sisaSaldo = totalMasuk - totalKeluar;
+    csv += "\n--- RINGKASAN KAS ---\n";
+    csv += `TOTAL PEMASUKAN;;${totalMasuk}\n`;
+    csv += `TOTAL PENGELUARAN;;${totalKeluar}\n`;
+    csv += `SISA SALDO KAS;;${sisaSaldo}\n`;
+
+    // Download File CSV
     const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
     const url = URL.createObjectURL(blob);
     const a = document.createElement("a");
     a.href = url;
-    a.download = `Laporan_Kas_17Agustus.csv`;
+    a.download = `Laporan_Kas_17Agustus_${new Date().toLocaleDateString('id-ID').replace(/\//g, '-')}.csv`;
     a.click();
     URL.revokeObjectURL(url);
 }
