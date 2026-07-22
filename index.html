@@ -13,7 +13,7 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Chart.js untuk Grafik Alokasi -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- html2pdf.js untuk Export PDF -->
+    <!-- html2pdf.js untuk Export Download PDF -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
@@ -201,7 +201,7 @@
         .loader-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; z-index: 999; color: white; font-weight: 700; }
         .hidden { display: none !important; }
 
-        /* WIDGET STYLING KWITANSI UNTUK PDF EXPORT */
+        /* WIDGET STYLING KWITANSI KHUSUS PROSES DOWNLOAD PDF */
         #pdf-receipt-template {
             width: 480px;
             padding: 24px;
@@ -232,7 +232,7 @@
 
 <div id="toast"><span id="toast-icon">✨</span><span id="toast-msg">Notifikasi</span></div>
 
-<!-- WIDGET RENDER KWITANSI UTK PDF EXPORT -->
+<!-- WIDGET KWITANSI UNTUK DOWNLOAD PDF -->
 <div id="pdf-receipt-template">
     <div class="pdf-header">
         <div style="font-size:1.6rem;">🇮🇩</div>
@@ -432,7 +432,7 @@
                             <th id="th-deskripsi">Nama Warga</th>
                             <th>Kategori</th>
                             <th>Jumlah</th>
-                            <th style="text-align: center;">Dokumen</th>
+                            <th style="text-align: center;">Opsi Kwitansi</th>
                             <th id="th-action" class="role-editor-only" style="width: 80px; text-align: center;">Aksi</th>
                         </tr>
                     </thead>
@@ -708,8 +708,7 @@ function tambahPemasukan() {
     });
 
     if (isWaAuto) {
-        let text = `Halo Bp/Ibu *${nama}*,\n\nTerima kasih! Pembayaran Iuran Kas 17 Agustus Anda sebesar *Rp ${jumlah.toLocaleString('id-ID')}* telah kami terima pada tanggal ${tanggal}.\n\n_Panitia HUT RI ke-81_`;
-        window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
+        bagikanKwitansiWA(nama, katEl.value, jumlah, tanggal);
     }
 
     namaEl.value = ""; jmlEl.value = "";
@@ -821,7 +820,11 @@ function renderData() {
 
             let docCell = "";
             if (state.currentTab === 'masuk') {
-                docCell = `<td style="text-align:center;"><button class="btn-action-sm" onclick="cetakKwitansiPDF('${item.id}', '${titleText}', '${katText}', '${item.jumlah}', '${tglFormatted}')">📄 Kwitansi</button></td>`;
+                docCell = `
+                    <td style="text-align:center; display:flex; justify-content:center; gap:6px;">
+                        <button class="btn-action-sm" onclick="downloadKwitansiPDF('${item.id}', '${titleText}', '${katText}', '${item.jumlah}', '${tglFormatted}')">📥 Download PDF</button>
+                        <button class="btn-action-sm" style="color:#10b981; border-color:rgba(16,185,129,0.3);" onclick="bagikanKwitansiWA('${titleText}', '${katText}', '${item.jumlah}', '${tglFormatted}')">📲 Bagikan</button>
+                    </td>`;
             } else {
                 docCell = item.nota ? `<td style="text-align:center;"><button class="btn-action-sm" onclick="openNotaModal('${item.nota}')">👁️ Nota</button></td>` : `<td style="text-align:center; color:var(--text-sub); font-size:0.75rem;">Tidak ada</td>`;
             }
@@ -875,8 +878,8 @@ function renderAgenda() {
     });
 }
 
-// FUNGSI CETAK KWITANSI TERBARU (SANGAT PRESI, LGSG EXPORT DOWNLOAD FILE PDF VIA HTML2PDF)
-function cetakKwitansiPDF(id, nama, kat, jumlah, tanggal) {
+// 1. FUNGSI DOWNLOAD OTOMATIS BERKAS PDF (TANPA POPUP PRINT)
+function downloadKwitansiPDF(id, nama, kat, jumlah, tanggal) {
     document.getElementById("pdf-id").innerText = id || "#" + Math.floor(Math.random() * 100000);
     document.getElementById("pdf-tgl").innerText = tanggal || new Date().toLocaleDateString('id-ID');
     document.getElementById("pdf-nama").innerText = nama || "-";
@@ -885,7 +888,6 @@ function cetakKwitansiPDF(id, nama, kat, jumlah, tanggal) {
 
     const element = document.getElementById("pdf-receipt-template");
     
-    // Geser elemen sementara agar terbaca penuh oleh html2pdf engine
     element.style.left = "0px";
     element.style.zIndex = "9999";
 
@@ -897,7 +899,7 @@ function cetakKwitansiPDF(id, nama, kat, jumlah, tanggal) {
         jsPDF:        { unit: 'in', format: 'a5', orientation: 'landscape' }
     };
 
-    showToast("⏳ Memproses & Mengunduh PDF...", "info");
+    showToast("⏳ Mengunduh file PDF...", "info");
 
     html2pdf().set(opt).from(element).save().then(() => {
         element.style.left = "-9999px";
@@ -906,8 +908,25 @@ function cetakKwitansiPDF(id, nama, kat, jumlah, tanggal) {
     }).catch(err => {
         element.style.left = "-9999px";
         element.style.zIndex = "-100";
-        showToast("❌ Gagal membuat file PDF!", "error");
+        showToast("❌ Gagal mengunduh PDF!", "error");
     });
+}
+
+// 2. FUNGSI BAGIKAN KWITANSI KE WHATSAPP
+function bagikanKwitansiWA(nama, kat, jumlah, tanggal) {
+    let text = `*🇮🇩 BUKTI TANDA TERIMA / KWITANSI IURAN*\n`;
+    text += `*PANITIA HUT KE-81 REPUBLIK INDONESIA*\n`;
+    text += `------------------------------------\n`;
+    text += `Diterima dari: *${nama}*\n`;
+    text += `Kategori: *${kat}*\n`;
+    text += `Tanggal: *${tanggal}*\n`;
+    text += `Jumlah: *${formatRp(jumlah)}*\n`;
+    text += `Status: *LUNAS / SAH*\n`;
+    text += `------------------------------------\n`;
+    text += `_Terima kasih atas partisipasi Anda dalam menyukseskan Peringatan HUT RI._`;
+
+    const encoded = encodeURIComponent(text);
+    window.open(`https://wa.me/?text=${encoded}`, '_blank');
 }
 
 function initChart() {
