@@ -11,14 +11,11 @@
 
     <!-- Font Plus Jakarta Sans -->
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
-    <!-- Chart.js untuk Grafik Alokasi -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- jsPDF Murni untuk Download PDF Anti-Blank -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
         :root {
-            /* Tema Merah Putih Modern (Dark Mode Glossy) */
             --bg-gradient: radial-gradient(circle at 50% 0%, #3a090b 0%, #170406 50%, #0a0203 100%);
             --card-bg: rgba(26, 9, 12, 0.65);
             --card-border: rgba(255, 255, 255, 0.08);
@@ -37,7 +34,6 @@
         }
 
         body.light {
-            /* Tema Merah Putih Modern (Light Mode Soft) */
             --bg-gradient: radial-gradient(circle at 50% 0%, #ffe4e6 0%, #f1f5f9 60%, #e2e8f0 100%);
             --card-bg: rgba(255, 255, 255, 0.85);
             --card-border: rgba(255, 255, 255, 0.9);
@@ -54,71 +50,31 @@
             --shadow-card: 0 10px 25px -5px rgba(0, 0, 0, 0.05), inset 0 1px 0 #ffffff;
         }
 
-        * {
-            margin: 0; padding: 0; box-sizing: border-box;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; font-family: 'Plus Jakarta Sans', sans-serif; transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1); }
+        body { background: var(--bg-gradient); background-attachment: fixed; color: var(--text-main); min-height: 100vh; padding: 20px 10px; display: flex; justify-content: center; align-items: center; }
 
-        body {
-            background: var(--bg-gradient); background-attachment: fixed;
-            color: var(--text-main); min-height: 100vh; padding: 20px 10px;
-            display: flex; justify-content: center; align-items: center;
-        }
+        .glass-panel { background: var(--card-bg); backdrop-filter: var(--glass-blur); -webkit-backdrop-filter: var(--glass-blur); border: 1px solid var(--card-border); border-radius: 20px; box-shadow: var(--shadow-card); position: relative; overflow: hidden; }
+        .glass-panel::before { content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px; background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent); }
 
-        /* GLASS PANEL BASE */
-        .glass-panel {
-            background: var(--card-bg); backdrop-filter: var(--glass-blur);
-            -webkit-backdrop-filter: var(--glass-blur); border: 1px solid var(--card-border);
-            border-radius: 20px; box-shadow: var(--shadow-card); position: relative; overflow: hidden;
-        }
-
-        .glass-panel::before {
-            content: ''; position: absolute; top: 0; left: 0; right: 0; height: 1px;
-            background: linear-gradient(90deg, transparent, rgba(255, 255, 255, 0.4), transparent);
-        }
-
-        /* LOGIN CONTAINER */
-        .login-card {
-            padding: 32px 20px; width: 100%; max-width: 420px; text-align: center;
-            box-shadow: var(--shadow-xl); border-color: var(--card-border-glow);
-        }
-
-        .login-card h2 {
-            font-size: 1.5rem; font-weight: 800; margin-bottom: 6px;
-            background: linear-gradient(135deg, #e11d48 0%, #be123c 100%);
-            -webkit-background-clip: text; -webkit-text-fill-color: transparent;
-        }
-
+        .login-card { padding: 32px 20px; width: 100%; max-width: 420px; text-align: center; box-shadow: var(--shadow-xl); border-color: var(--card-border-glow); }
+        .login-card h2 { font-size: 1.5rem; font-weight: 800; margin-bottom: 6px; background: linear-gradient(135deg, #e11d48 0%, #be123c 100%); -webkit-background-clip: text; -webkit-text-fill-color: transparent; }
         .login-card p { color: var(--text-sub); font-size: 0.85rem; margin-bottom: 24px; }
 
         .form-group-login { display: flex; flex-direction: column; gap: 14px; margin-bottom: 20px; text-align: left; }
         .form-group-login label { font-size: 0.78rem; font-weight: 700; color: var(--text-sub); text-transform: uppercase; letter-spacing: 0.05em; }
 
-        /* MAIN APP CONTAINER */
         .app-container { width: 100%; max-width: 1000px; display: flex; flex-direction: column; gap: 16px; }
-
-        /* HEADER CARD */
-        .header-card {
-            padding: 24px 16px; text-align: center;
-            background: linear-gradient(180deg, rgba(225, 29, 72, 0.08) 0%, rgba(0, 0, 0, 0) 100%);
-            border-color: var(--card-border-glow);
-        }
-
+        .header-card { padding: 24px 16px; text-align: center; background: linear-gradient(180deg, rgba(225, 29, 72, 0.08) 0%, rgba(0, 0, 0, 0) 100%); border-color: var(--card-border-glow); }
         .header-card h1 { font-size: 1.3rem; font-weight: 800; letter-spacing: -0.02em; margin-top: 12px; margin-bottom: 4px; }
         .user-badge { position: absolute; top: 14px; left: 14px; background: rgba(0, 0, 0, 0.05); border: 1px solid var(--card-border); padding: 4px 10px; border-radius: 30px; font-size: 0.7rem; font-weight: 700; }
         .btn-logout { position: absolute; top: 14px; right: 14px; background: rgba(225, 29, 72, 0.1); color: var(--red-accent); border: 1px solid rgba(225, 29, 72, 0.25); padding: 4px 12px; border-radius: 30px; font-size: 0.7rem; font-weight: 700; cursor: pointer; }
-        .btn-logout:hover { background: var(--red-accent); color: white; box-shadow: 0 0 15px var(--red-glow); }
 
         .countdown-box { display: inline-block; background: rgba(225, 29, 72, 0.1); border: 1px solid rgba(225, 29, 72, 0.3); color: var(--red-accent); padding: 6px 16px; border-radius: 30px; font-weight: 800; font-size: 1rem; margin-top: 10px; font-variant-numeric: tabular-nums; }
-
-        /* PROGRESS TARGET KAS RT06 */
         .target-box { background: var(--input-bg); border: 1px solid var(--input-border); padding: 14px 16px; border-radius: 16px; margin-top: 14px; text-align: left; }
         .target-header { display: flex; justify-content: space-between; font-size: 0.8rem; font-weight: 700; margin-bottom: 8px; }
         .progress-bar-bg { width: 100%; height: 10px; background: rgba(0, 0, 0, 0.1); border-radius: 20px; overflow: hidden; border: 1px solid var(--input-border); }
         .progress-bar-fill { height: 100%; width: 0%; background: linear-gradient(90deg, #10b981 0%, #059669 100%); border-radius: 20px; transition: width 0.5s ease; }
 
-        /* DASHBOARD GRID CARDS */
         .stats-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(140px, 1fr)); gap: 10px; }
         .stat-card { padding: 14px; border-radius: 16px; position: relative; box-shadow: 0 8px 20px rgba(0, 0, 0, 0.05); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px); }
         .stat-card p { font-size: 0.7rem; font-weight: 700; text-transform: uppercase; letter-spacing: 0.05em; margin-bottom: 6px; }
@@ -129,51 +85,37 @@
         .stat-card.keluar { background: linear-gradient(135deg, rgba(239, 68, 68, 0.12) 0%, rgba(225, 29, 72, 0.04) 100%); border: 1px solid rgba(239, 68, 68, 0.35); }
         .stat-card.warga { background: linear-gradient(135deg, rgba(139, 92, 246, 0.12) 0%, rgba(124, 58, 237, 0.04) 100%); border: 1px solid rgba(139, 92, 246, 0.35); }
 
-        /* ANALYTICS GRID */
         .analytics-grid { display: grid; grid-template-columns: 1fr 280px; gap: 16px; margin-bottom: 20px; }
-        @media (max-width: 768px) { 
-            .analytics-grid { grid-template-columns: 1fr; } 
-            .header-card h1 { font-size: 1.15rem; }
-            body { padding: 10px 6px; }
-        }
+        @media (max-width: 768px) { .analytics-grid { grid-template-columns: 1fr; } .header-card h1 { font-size: 1.15rem; } body { padding: 10px 6px; } }
         .chart-box { padding: 10px; height: 260px; width: 100%; display: flex; align-items: center; justify-content: center; position: relative; }
 
-        /* TABS */
         .tabs { display: flex; background: var(--input-bg); padding: 4px; border-radius: 14px; border: 1px solid var(--input-border); gap: 4px; margin-bottom: 16px; }
         .tab-btn { flex: 1; padding: 10px 6px; border: none; background: transparent; color: var(--text-sub); font-weight: 700; border-radius: 10px; cursor: pointer; font-size: 0.78rem; text-align: center; }
         .tab-btn.active { background: var(--card-bg); color: var(--text-main); border: 1px solid var(--card-border); box-shadow: 0 4px 15px rgba(0,0,0,0.05); }
 
-        /* FORMS */
         .form-grid { display: grid; grid-template-columns: 2fr 1.5fr 1.5fr auto; gap: 10px; margin-bottom: 20px; }
         @media (max-width: 768px) { .form-grid { grid-template-columns: 1fr; } }
 
         input, select { width: 100%; padding: 12px 14px; border-radius: 12px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-main); font-size: 0.88rem; outline: none; }
         input:focus, select:focus { border-color: var(--red-accent); box-shadow: 0 0 0 3px var(--red-glow); }
 
-        button.btn-primary {
-            background: linear-gradient(135deg, #e11d48 0%, #be123c 100%); color: white;
-            border: 1px solid rgba(255, 255, 255, 0.3); padding: 12px 18px; border-radius: 12px;
-            font-weight: 700; cursor: pointer; box-shadow: 0 6px 20px var(--red-glow); white-space: nowrap; font-size: 0.88rem;
-        }
+        button.btn-primary { background: linear-gradient(135deg, #e11d48 0%, #be123c 100%); color: white; border: 1px solid rgba(255, 255, 255, 0.3); padding: 12px 18px; border-radius: 12px; font-weight: 700; cursor: pointer; box-shadow: 0 6px 20px var(--red-glow); white-space: nowrap; font-size: 0.88rem; }
 
-        /* TOOLBAR */
         .toolbar { display: flex; justify-content: space-between; align-items: center; gap: 10px; margin-bottom: 16px; flex-wrap: wrap; }
         .search-box { flex: 1; min-width: 180px; }
         .btn-outline, .btn-wa { background: var(--input-bg); border: 1px solid var(--input-border); color: var(--text-main); padding: 8px 14px; border-radius: 10px; font-size: 0.8rem; font-weight: 700; cursor: pointer; display: inline-flex; align-items: center; gap: 6px; }
         .btn-wa { background: rgba(16, 185, 129, 0.12); color: #10b981; border-color: rgba(16, 185, 129, 0.3); }
-        .btn-wa:hover { background: #10b981; color: white; }
         .btn-danger-light { background: rgba(225, 29, 72, 0.1); color: var(--red-accent); border: 1px solid rgba(225, 29, 72, 0.25); padding: 8px 14px; border-radius: 10px; font-size: 0.8rem; font-weight: 700; cursor: pointer; }
 
-        /* TABLE AUTO RESPONSIVE */
         .table-container { overflow-x: auto; border-radius: 14px; border: 1px solid var(--input-border); background: var(--input-bg); -webkit-overflow-scrolling: touch; }
-        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; min-width: 550px; }
+        table { width: 100%; border-collapse: collapse; text-align: left; font-size: 0.85rem; min-width: 580px; }
         th { background: rgba(0, 0, 0, 0.03); color: var(--text-sub); padding: 12px 14px; font-weight: 700; font-size: 0.75rem; text-transform: uppercase; border-bottom: 1px solid var(--input-border); white-space: nowrap; }
         td { padding: 12px 14px; border-bottom: 1px solid var(--input-border); vertical-align: middle; }
         .badge-kat { padding: 4px 8px; border-radius: 20px; font-size: 0.7rem; font-weight: 700; background: rgba(255,255,255,0.08); border: 1px solid var(--input-border); display: inline-block; white-space: nowrap; }
         .btn-action-sm { padding: 5px 8px; border-radius: 6px; border: 1px solid var(--input-border); background: var(--input-bg); color: var(--text-main); font-size: 0.72rem; font-weight: 700; cursor: pointer; white-space: nowrap; }
-        .btn-del { background: rgba(225, 29, 72, 0.1); color: var(--red-accent); border: 1px solid rgba(225, 29, 72, 0.2); padding: 5px 10px; border-radius: 6px; cursor: pointer; font-size: 0.75rem; font-weight: 700; }
+        .btn-edit { background: rgba(245, 158, 11, 0.15); color: #f59e0b; border: 1px solid rgba(245, 158, 11, 0.3); padding: 5px 8px; border-radius: 6px; cursor: pointer; font-size: 0.72rem; font-weight: 700; }
+        .btn-del { background: rgba(225, 29, 72, 0.1); color: var(--red-accent); border: 1px solid rgba(225, 29, 72, 0.2); padding: 5px 8px; border-radius: 6px; cursor: pointer; font-size: 0.72rem; font-weight: 700; }
 
-        /* TIMELINE AGENDA STYLES */
         .timeline-list { display: flex; flex-direction: column; gap: 12px; }
         .timeline-card { background: var(--input-bg); border: 1px solid var(--input-border); border-radius: 14px; padding: 14px; display: flex; justify-content: space-between; align-items: center; gap: 12px; flex-wrap: wrap; }
         .status-badge { padding: 4px 10px; border-radius: 20px; font-size: 0.7rem; font-weight: 800; text-transform: uppercase; }
@@ -182,18 +124,10 @@
         .status-upcoming { background: rgba(59, 130, 246, 0.15); color: #3b82f6; border: 1px solid rgba(59, 130, 246, 0.3); }
         .status-delayed { background: rgba(239, 68, 68, 0.15); color: #ef4444; border: 1px solid rgba(239, 68, 68, 0.3); }
 
-        /* FLOATING CONTROLS */
         .theme-toggle { position: fixed; bottom: 16px; left: 16px; background: var(--card-bg); border: 1px solid var(--card-border); color: var(--text-main); border-radius: 50px; padding: 8px 14px; font-weight: 700; font-size: 0.78rem; cursor: pointer; backdrop-filter: var(--glass-blur); z-index: 100; box-shadow: var(--shadow-card); }
         .pwa-btn { position: fixed; bottom: 16px; right: 16px; background: #e11d48; color: white; border: none; border-radius: 50px; padding: 8px 14px; font-weight: 700; font-size: 0.78rem; cursor: pointer; z-index: 100; box-shadow: 0 6px 20px var(--red-glow); display: none; }
 
-        /* TOAST & MODAL */
-        #toast {
-            position: fixed; top: 16px; right: 16px; background: var(--card-bg);
-            backdrop-filter: var(--glass-blur); border: 1px solid var(--card-border); color: var(--text-main);
-            padding: 12px 18px; border-radius: 14px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25);
-            display: flex; align-items: center; gap: 10px; z-index: 2000; font-size: 0.85rem; font-weight: 700;
-            transform: translateY(-20px) scale(0.95); opacity: 0; visibility: hidden; transition: all 0.3s ease;
-        }
+        #toast { position: fixed; top: 16px; right: 16px; background: var(--card-bg); backdrop-filter: var(--glass-blur); border: 1px solid var(--card-border); color: var(--text-main); padding: 12px 18px; border-radius: 14px; box-shadow: 0 20px 40px rgba(0, 0, 0, 0.25); display: flex; align-items: center; gap: 10px; z-index: 2000; font-size: 0.85rem; font-weight: 700; transform: translateY(-20px) scale(0.95); opacity: 0; visibility: hidden; transition: all 0.3s ease; }
         #toast.show { transform: translateY(0) scale(1); opacity: 1; visibility: visible; }
         #toast.success { border-color: rgba(16, 185, 129, 0.4); }
         #toast.error { border-color: rgba(239, 68, 68, 0.4); }
@@ -234,6 +168,35 @@
         <div style="display:flex; gap:10px;">
             <button style="flex:1; padding:12px; border-radius:10px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-main); font-weight:700;" onclick="closeDeleteModal()">Batal</button>
             <button style="flex:1; padding:12px; border-radius:10px; border:none; background:var(--red-accent); color:white; font-weight:700;" id="btn-modal-action">Hapus</button>
+        </div>
+    </div>
+</div>
+
+<!-- MODAL EDIT DATA (TRANSAKSI / AGENDA) -->
+<div id="edit-modal" class="modal-overlay">
+    <div class="modal-card" style="text-align: left;">
+        <h3 style="margin-bottom: 16px; text-align: center;">✏️ Edit Data</h3>
+        <input type="hidden" id="edit-id">
+        <input type="hidden" id="edit-type">
+        
+        <div style="display: flex; flex-direction: column; gap: 12px; margin-bottom: 20px;">
+            <div>
+                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-sub);" id="lbl-edit-1">Nama / Keterangan</label>
+                <input type="text" id="edit-field-1">
+            </div>
+            <div>
+                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-sub);" id="lbl-edit-2">Kategori / Waktu</label>
+                <input type="text" id="edit-field-2">
+            </div>
+            <div id="container-edit-3">
+                <label style="font-size: 0.75rem; font-weight: 700; color: var(--text-sub);" id="lbl-edit-3">Jumlah (Rp)</label>
+                <input type="number" id="edit-field-3">
+            </div>
+        </div>
+
+        <div style="display:flex; gap:10px;">
+            <button style="flex:1; padding:12px; border-radius:10px; border:1px solid var(--input-border); background:var(--input-bg); color:var(--text-main); font-weight:700;" onclick="closeEditModal()">Batal</button>
+            <button class="btn-primary" style="flex:1;" onclick="simpanPerubahanEdit()">Simpan</button>
         </div>
     </div>
 </div>
@@ -326,7 +289,7 @@
             <button class="tab-btn" onclick="switchTab('agenda')">🎪 Jadwal & Lomba</button>
         </div>
 
-        <!-- FORM PEMASUKAN (+ CHECKBOX WA AUTO) -->
+        <!-- FORM PEMASUKAN -->
         <div id="form-masuk" class="form-grid role-editor-only">
             <input type="text" id="in-nama" placeholder="Nama Warga (cth: Pak RT 02)">
             <select id="in-kat-masuk">
@@ -343,7 +306,7 @@
             </div>
         </div>
 
-        <!-- FORM PENGELUARAN (+ INPUT NOTA) -->
+        <!-- FORM PENGELUARAN -->
         <div id="form-keluar" class="form-grid hidden role-editor-only">
             <input type="text" id="in-ket" placeholder="Keterangan Belanja (cth: Beli Bambu)">
             <select id="in-kat-keluar">
@@ -395,7 +358,7 @@
                             <th>Kategori</th>
                             <th>Jumlah</th>
                             <th style="text-align: center;">Opsi Kwitansi</th>
-                            <th id="th-action" class="role-editor-only" style="width: 80px; text-align: center;">Aksi</th>
+                            <th id="th-action" class="role-editor-only" style="text-align: center;">Aksi</th>
                         </tr>
                     </thead>
                     <tbody id="table-body"></tbody>
@@ -411,7 +374,6 @@
 </div>
 
 <script>
-// === URL GOOGLE APPS SCRIPT ANDA ===
 const API_URL = "https://script.google.com/macros/s/AKfycby0YjtywpDJLTMhgMY1E8wNKyOERIvwYfcUrf8EaikXdqQnMmiZeamdoVqSk9ZkcIg/exec";
 const TARGET_KAS = 2000000;
 
@@ -427,7 +389,6 @@ let state = {
     agenda: []
 };
 
-// --- INISIALISASI & PWA SUPPORT ---
 window.onload = () => {
     document.body.classList.add("light");
     startCountdown();
@@ -445,9 +406,7 @@ function installPWA() {
     if (deferredPrompt) {
         deferredPrompt.prompt();
         deferredPrompt.userChoice.then((choice) => {
-            if (choice.outcome === 'accepted') {
-                document.getElementById('pwa-install-btn').style.display = 'none';
-            }
+            if (choice.outcome === 'accepted') document.getElementById('pwa-install-btn').style.display = 'none';
             deferredPrompt = null;
         });
     }
@@ -455,21 +414,15 @@ function installPWA() {
 
 function registerServiceWorker() {
     if ('serviceWorker' in navigator) {
-        const swCode = `
-            self.addEventListener('fetch', function(event) {
-                event.respondWith(fetch(event.request).catch(function() { return caches.match(event.request); }));
-            });
-        `;
+        const swCode = `self.addEventListener('fetch', function(event) { event.respondWith(fetch(event.request).catch(function() { return caches.match(event.request); })); });`;
         const blob = new Blob([swCode], { type: 'application/javascript' });
         navigator.serviceWorker.register(URL.createObjectURL(blob)).catch(() => {});
     }
 }
 
-// --- OTENTIKASI SECARA SECURE KE BACKEND ---
 async function handleLogin() {
     const userIn = document.getElementById("login-user").value.trim();
     const passIn = document.getElementById("login-pass").value.trim();
-
     if (!userIn || !passIn) return showToast("⚠️ Harap isi username & password!", "error");
 
     showLoader(true);
@@ -550,22 +503,10 @@ function openDeleteModal(title, desc, onConfirm) {
     };
 }
 
-function closeDeleteModal() {
-    document.getElementById("delete-modal").classList.remove("show");
-}
-
-function openNotaModal(imgSrc) {
-    document.getElementById("img-nota-preview").src = imgSrc;
-    document.getElementById("nota-modal").classList.add("show");
-}
-
-function closeNotaModal() {
-    document.getElementById("nota-modal").classList.remove("show");
-}
-
-function showLoader(show) {
-    document.getElementById("loader").classList.toggle("hidden", !show);
-}
+function closeDeleteModal() { document.getElementById("delete-modal").classList.remove("show"); }
+function openNotaModal(imgSrc) { document.getElementById("img-nota-preview").src = imgSrc; document.getElementById("nota-modal").classList.add("show"); }
+function closeNotaModal() { document.getElementById("nota-modal").classList.remove("show"); }
+function showLoader(show) { document.getElementById("loader").classList.toggle("hidden", !show); }
 
 function toggleTheme() {
     document.body.classList.toggle("light");
@@ -616,7 +557,6 @@ function switchTab(tab) {
     }
 }
 
-// --- CLOUD SYNC ---
 async function fetchCloudData() {
     showLoader(true);
     try {
@@ -652,7 +592,6 @@ async function sendCloudPayload(payload) {
     }
 }
 
-// --- EDITOR ACTIONS ---
 function tambahPemasukan() {
     const namaEl = document.getElementById("in-nama");
     const katEl = document.getElementById("in-kat-masuk");
@@ -665,13 +604,8 @@ function tambahPemasukan() {
     const jumlah = Number(jmlEl.value);
     const tanggal = new Date().toLocaleDateString('id-ID');
 
-    sendCloudPayload({
-        action: "tambah_iuran", nama: nama, kategori: katEl.value, jumlah: jumlah, tanggal: tanggal
-    });
-
-    if (isWaAuto) {
-        bagikanKwitansiWA(nama, katEl.value, jumlah, tanggal);
-    }
+    sendCloudPayload({ action: "tambah_iuran", nama: nama, kategori: katEl.value, jumlah: jumlah, tanggal: tanggal });
+    if (isWaAuto) bagikanKwitansiWA(nama, katEl.value, jumlah, tanggal);
 
     namaEl.value = ""; jmlEl.value = "";
 }
@@ -687,10 +621,7 @@ async function tambahPengeluaran() {
     let base64Nota = "";
     if (notaFile) base64Nota = await convertBase64(notaFile);
 
-    sendCloudPayload({
-        action: "tambah_pengeluaran", keterangan: ketEl.value.trim(), kategori: katEl.value, jumlah: Number(jmlEl.value), nota: base64Nota, tanggal: new Date().toLocaleDateString('id-ID')
-    });
-
+    sendCloudPayload({ action: "tambah_pengeluaran", keterangan: ketEl.value.trim(), kategori: katEl.value, jumlah: Number(jmlEl.value), nota: base64Nota, tanggal: new Date().toLocaleDateString('id-ID') });
     ketEl.value = ""; jmlEl.value = ""; document.getElementById("in-nota").value = "";
 }
 
@@ -701,10 +632,7 @@ function tambahAgenda() {
 
     if(!kegEl.value.trim() || !waktuEl.value.trim()) return showToast("⚠️ Isi nama kegiatan dan waktu!", "error");
 
-    sendCloudPayload({
-        action: "tambah_agenda", kegiatan: kegEl.value.trim(), waktu: waktuEl.value.trim(), status: statEl.value
-    });
-
+    sendCloudPayload({ action: "tambah_agenda", kegiatan: kegEl.value.trim(), waktu: waktuEl.value.trim(), status: statEl.value });
     kegEl.value = ""; waktuEl.value = "";
 }
 
@@ -718,7 +646,7 @@ function convertBase64(file) {
 }
 
 function hapusItem(id, type) {
-    openDeleteModal("Hapus Transaksi?", "Yakin ingin menghapus item transaksi ini?", () => {
+    openDeleteModal("Hapus Item?", "Yakin ingin menghapus item ini?", () => {
         sendCloudPayload({ action: "Hapus", id: id, type: type });
     });
 }
@@ -729,27 +657,73 @@ function hapusSemuaPengeluaran() {
     });
 }
 
+// --- FUNGSI MODAL EDIT ---
+function openEditModal(id, type, f1, f2, f3) {
+    document.getElementById("edit-id").value = id;
+    document.getElementById("edit-type").value = type;
+
+    if (type === 'riwayat') {
+        document.getElementById("lbl-edit-1").innerText = "Nama Warga";
+        document.getElementById("lbl-edit-2").innerText = "Kategori";
+        document.getElementById("lbl-edit-3").innerText = "Jumlah (Rp)";
+        document.getElementById("container-edit-3").style.display = "block";
+    } else if (type === 'pengeluaran') {
+        document.getElementById("lbl-edit-1").innerText = "Keterangan Belanja";
+        document.getElementById("lbl-edit-2").innerText = "Kategori";
+        document.getElementById("lbl-edit-3").innerText = "Jumlah (Rp)";
+        document.getElementById("container-edit-3").style.display = "block";
+    } else if (type === 'agenda') {
+        document.getElementById("lbl-edit-1").innerText = "Nama Lomba / Acara";
+        document.getElementById("lbl-edit-2").innerText = "Waktu Kegiatan";
+        document.getElementById("lbl-edit-3").innerText = "Status Agenda";
+        document.getElementById("container-edit-3").style.display = "block";
+    }
+
+    document.getElementById("edit-field-1").value = f1;
+    document.getElementById("edit-field-2").value = f2;
+    document.getElementById("edit-field-3").value = f3;
+
+    document.getElementById("edit-modal").classList.add("show");
+}
+
+function closeEditModal() {
+    document.getElementById("edit-modal").classList.remove("show");
+}
+
+function simpanPerubahanEdit() {
+    const id = document.getElementById("edit-id").value;
+    const type = document.getElementById("edit-type").value;
+    const f1 = document.getElementById("edit-field-1").value.trim();
+    const f2 = document.getElementById("edit-field-2").value.trim();
+    const f3 = document.getElementById("edit-field-3").value.trim();
+
+    if (!f1 || !f2) return showToast("⚠️ Harap lengkapi isian edit!", "error");
+
+    let payload = { action: "edit_item", id: id, type: type };
+
+    if (type === 'riwayat') {
+        payload.nama = f1; payload.kategori = f2; payload.jumlah = Number(f3);
+    } else if (type === 'pengeluaran') {
+        payload.keterangan = f1; payload.kategori = f2; payload.jumlah = Number(f3);
+    } else if (type === 'agenda') {
+        payload.kegiatan = f1; payload.waktu = f2; payload.status = f3;
+    }
+
+    sendCloudPayload(payload);
+    closeEditModal();
+}
+
 function formatRp(val) { return "Rp " + Number(val || 0).toLocaleString('id-ID'); }
 
-// PERBAIKAN FORMAT TANGGAL ISO (8601)/GOOGLE SHEETS OBJECT
 function fixDateDisplay(dateStr) {
     if (!dateStr) return "-";
-
     try {
         const d = new Date(dateStr);
-        if (!isNaN(d.getTime())) {
-            return d.toLocaleDateString('id-ID', {
-                day: '2-digit',
-                month: '2-digit',
-                year: 'numeric'
-            });
-        }
+        if (!isNaN(d.getTime())) return d.toLocaleDateString('id-ID', { day: '2-digit', month: '2-digit', year: 'numeric' });
     } catch (e) {}
-
     return String(dateStr);
 }
 
-// --- RENDER FUNCTIONS ---
 function renderData() {
     const searchKey = document.getElementById("search-input").value.toLowerCase();
     const tbody = document.getElementById("table-body");
@@ -800,7 +774,11 @@ function renderData() {
                 docCell = item.nota ? `<td style="text-align:center;"><button class="btn-action-sm" onclick="openNotaModal('${item.nota}')">👁️ Nota</button></td>` : `<td style="text-align:center; color:var(--text-sub); font-size:0.75rem;">Tidak ada</td>`;
             }
 
-            let actionCell = isEditor ? `<td style="text-align:center;"><button class="btn-del" onclick="hapusItem('${item.id}', '${state.currentTab === 'masuk' ? 'riwayat' : 'pengeluaran'}')">Hapus</button></td>` : '';
+            let actionCell = isEditor ? `
+                <td style="text-align:center; white-space:nowrap;">
+                    <button class="btn-edit" onclick="openEditModal('${item.id}', '${state.currentTab === 'masuk' ? 'riwayat' : 'pengeluaran'}', '${titleText}', '${katText}', '${item.jumlah}')">✏️ Edit</button>
+                    <button class="btn-del" onclick="hapusItem('${item.id}', '${state.currentTab === 'masuk' ? 'riwayat' : 'pengeluaran'}')">Hapus</button>
+                </td>` : '';
 
             tr.innerHTML = `
                 <td style="white-space:nowrap;">${tglFormatted}</td>
@@ -826,6 +804,7 @@ function renderAgenda() {
         return;
     }
 
+    const isEditor = currentUser && currentUser.role === 'editor';
     const badgeClass = {
         'Sedang Berlangsung': 'status-ongoing',
         'Selesai': 'status-completed',
@@ -836,10 +815,19 @@ function renderAgenda() {
     state.agenda.forEach(item => {
         const div = document.createElement("div");
         div.className = "timeline-card";
+
+        let actionBtns = isEditor ? `
+            <div style="display:flex; gap:6px; margin-top:8px;">
+                <button class="btn-edit" onclick="openEditModal('${item.id}', 'agenda', '${item.kegiatan}', '${item.waktu}', '${item.status}')">✏️ Edit</button>
+                <button class="btn-del" onclick="hapusItem('${item.id}', 'agenda')">🗑️ Hapus</button>
+            </div>
+        ` : '';
+
         div.innerHTML = `
             <div>
                 <h4 style="font-size:0.95rem; font-weight:800; margin-bottom:4px;">${item.kegiatan}</h4>
                 <p style="font-size:0.8rem; color:var(--text-sub);">⏰ ${item.waktu}</p>
+                ${actionBtns}
             </div>
             <div>
                 <span class="status-badge ${badgeClass[item.status] || 'status-upcoming'}">${item.status}</span>
@@ -849,15 +837,9 @@ function renderAgenda() {
     });
 }
 
-// 1. FUNGSI DOWNLOAD PDF MURNI
 function downloadKwitansiPDF(id, nama, kat, jumlah, tanggal) {
     const { jsPDF } = window.jspdf;
-    
-    const doc = new jsPDF({
-        orientation: 'landscape',
-        unit: 'mm',
-        format: 'a6'
-    });
+    const doc = new jsPDF({ orientation: 'landscape', unit: 'mm', format: 'a6' });
 
     const noTx = id || "#" + Math.floor(Math.random() * 100000);
     const tgl = tanggal || new Date().toLocaleDateString('id-ID');
@@ -865,91 +847,40 @@ function downloadKwitansiPDF(id, nama, kat, jumlah, tanggal) {
     const kategori = kat || "Iuran Warga";
     const nominal = formatRp(jumlah);
 
-    // Border Luar
-    doc.setDrawColor(225, 29, 72);
-    doc.setLineWidth(1);
-    doc.rect(5, 5, 138, 95);
-
-    // Header
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(14);
-    doc.setTextColor(225, 29, 72);
+    doc.setDrawColor(225, 29, 72); doc.setLineWidth(1); doc.rect(5, 5, 138, 95);
+    doc.setFont("helvetica", "bold"); doc.setFontSize(14); doc.setTextColor(225, 29, 72);
     doc.text("KWITANSI BUKTI IURAN", 74, 16, { align: "center" });
-
-    doc.setFontSize(8);
-    doc.setTextColor(100, 116, 139);
+    doc.setFontSize(8); doc.setTextColor(100, 116, 139);
     doc.text("PANITIA RT06 PERINGATAN HUT KE-81 REPUBLIK INDONESIA", 74, 21, { align: "center" });
 
-    // Garis Pembatas Header (Dashed)
-    doc.setDrawColor(203, 213, 225);
-    doc.setLineDashPattern([2, 2], 0);
-    doc.line(12, 25, 136, 25);
-    doc.setLineDashPattern([], 0);
+    doc.setDrawColor(203, 213, 225); doc.setLineDashPattern([2, 2], 0); doc.line(12, 25, 136, 25); doc.setLineDashPattern([], 0);
 
-    // Rincian Data Transaksi
-    doc.setFontSize(9);
-    doc.setTextColor(51, 65, 85);
-    
+    doc.setFontSize(9); doc.setTextColor(51, 65, 85);
     doc.setFont("helvetica", "normal");
-    doc.text("No. Transaksi", 14, 34);
-    doc.text("Tanggal", 14, 41);
-    doc.text("Diterima Dari", 14, 48);
-    doc.text("Kategori", 14, 55);
-
-    doc.text(":", 42, 34);
-    doc.text(":", 42, 41);
-    doc.text(":", 42, 48);
-    doc.text(":", 42, 55);
+    doc.text("No. Transaksi", 14, 34); doc.text("Tanggal", 14, 41); doc.text("Diterima Dari", 14, 48); doc.text("Kategori", 14, 55);
+    doc.text(":", 42, 34); doc.text(":", 42, 41); doc.text(":", 42, 48); doc.text(":", 42, 55);
 
     doc.setFont("helvetica", "bold");
-    doc.text(String(noTx), 45, 34);
-    doc.text(String(tgl), 45, 41);
-    doc.text(String(namaWarga), 45, 48);
-    doc.text(String(kategori), 45, 55);
+    doc.text(String(noTx), 45, 34); doc.text(String(tgl), 45, 41); doc.text(String(namaWarga), 45, 48); doc.text(String(kategori), 45, 55);
 
-    // Box Total Nominal
-    doc.setFillColor(254, 226, 226);
-    doc.roundedRect(14, 61, 120, 12, 2, 2, 'F');
-    
-    doc.setFontSize(12);
-    doc.setTextColor(190, 18, 60);
+    doc.setFillColor(254, 226, 226); doc.roundedRect(14, 61, 120, 12, 2, 2, 'F');
+    doc.setFontSize(12); doc.setTextColor(190, 18, 60);
     doc.text(`Jumlah: ${nominal}`, 74, 69, { align: "center" });
 
-    // Footer & Stempel
-    doc.setFontSize(8);
-    doc.setFont("helvetica", "italic");
-    doc.setTextColor(100, 116, 139);
+    doc.setFontSize(8); doc.setFont("helvetica", "italic"); doc.setTextColor(100, 116, 139);
     doc.text("Terima kasih atas partisipasi Anda.", 14, 82);
 
-    // Stempel LUNAS
-    doc.setFont("helvetica", "bold");
-    doc.setFontSize(9);
-    doc.setDrawColor(5, 150, 105);
-    doc.setTextColor(5, 150, 105);
-    doc.roundedRect(98, 76, 36, 10, 1, 1, 'D');
-    doc.text("LUNAS / SAH", 116, 82.5, { align: "center" });
+    doc.setFont("helvetica", "bold"); doc.setFontSize(9); doc.setDrawColor(5, 150, 105); doc.setTextColor(5, 150, 105);
+    doc.roundedRect(98, 76, 36, 10, 1, 1, 'D'); doc.text("LUNAS / SAH", 116, 82.5, { align: "center" });
 
-    // Download PDF
     showToast("⏳ Mengunduh file PDF...", "info");
     doc.save(`Kwitansi_${String(namaWarga).replace(/\s+/g, '_')}.pdf`);
     showToast("📄 File Kwitansi PDF berhasil diunduh!", "success");
 }
 
-// 2. FUNGSI BAGIKAN KWITANSI KE WHATSAPP
 function bagikanKwitansiWA(nama, kat, jumlah, tanggal) {
-    let text = `*🇮🇩 BUKTI TANDA TERIMA / KWITANSI IURAN*\n`;
-    text += `*PANITIA RT 06 HUT KE-81 REPUBLIK INDONESIA*\n`;
-    text += `------------------------------------\n`;
-    text += `Diterima dari: *${nama}*\n`;
-    text += `Kategori: *${kat}*\n`;
-    text += `Tanggal: *${tanggal}*\n`;
-    text += `Jumlah: *${formatRp(jumlah)}*\n`;
-    text += `Status: *LUNAS / SAH*\n`;
-    text += `------------------------------------\n`;
-    text += `_Terima kasih atas partisipasi Anda dalam menyukseskan Peringatan HUT RI._`;
-
-    const encoded = encodeURIComponent(text);
-    window.open(`https://wa.me/?text=${encoded}`, '_blank');
+    let text = `*🇮🇩 BUKTI TANDA TERIMA / KWITANSI IURAN*\n*PANITIA RT 06 HUT KE-81 REPUBLIK INDONESIA*\n------------------------------------\nDiterima dari: *${nama}*\nKategori: *${kat}*\nTanggal: *${tanggal}*\nJumlah: *${formatRp(jumlah)}*\nStatus: *LUNAS / SAH*\n------------------------------------\n_Terima kasih atas partisipasi Anda dalam menyukseskan Peringatan HUT RI._`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
 }
 
 function initChart() {
@@ -960,24 +891,11 @@ function initChart() {
         type: 'doughnut',
         data: {
             labels: ['Perlengkapan', 'Hadiah Lomba', 'Konsumsi', 'Dekorasi', 'Lainnya'],
-            datasets: [{
-                data: [0, 0, 0, 0, 0],
-                backgroundColor: ['#ef4444', '#f59e0b', '#10b981', '#6366f1', '#8b5cf6']
-            }]
+            datasets: [{ data: [0, 0, 0, 0, 0], backgroundColor: ['#ef4444', '#f59e0b', '#10b981', '#6366f1', '#8b5cf6'] }]
         },
         options: {
-            responsive: true,
-            maintainAspectRatio: false,
-            plugins: {
-                legend: {
-                    position: isMobile ? 'bottom' : 'right',
-                    labels: {
-                        boxWidth: 12,
-                        padding: 10,
-                        font: { family: 'Plus Jakarta Sans', size: 10 }
-                    }
-                }
-            }
+            responsive: true, maintainAspectRatio: false,
+            plugins: { legend: { position: isMobile ? 'bottom' : 'right', labels: { boxWidth: 12, padding: 10, font: { family: 'Plus Jakarta Sans', size: 10 } } } }
         }
     });
 }
@@ -986,11 +904,8 @@ function updateChart() {
     if(!expenseChart) return;
     const categories = ['Perlengkapan', 'Hadiah Lomba', 'Konsumsi', 'Dekorasi', 'Lainnya'];
     const totals = categories.map(cat => {
-        return state.pengeluaran
-            .filter(item => (item.kategori || 'Lainnya') === cat)
-            .reduce((sum, item) => sum + Number(item.jumlah || 0), 0);
+        return state.pengeluaran.filter(item => (item.kategori || 'Lainnya') === cat).reduce((sum, item) => sum + Number(item.jumlah || 0), 0);
     });
-
     expenseChart.data.datasets[0].data = totals;
     expenseChart.update();
 }
@@ -1000,46 +915,24 @@ function shareToWhatsApp() {
     const totalKeluar = state.pengeluaran.reduce((acc, item) => acc + Number(item.jumlah || 0), 0);
     const saldo = totalMasuk - totalKeluar;
 
-    let text = `*🇮🇩 LAPORAN KAS 17 AGUSTUS WARGA RT06*\n`;
-    text += `------------------------------------\n`;
-    text += `📥 Total Pemasukan: *${formatRp(totalMasuk)}*\n`;
-    text += `📤 Total Pengeluaran: *${formatRp(totalKeluar)}*\n`;
-    text += `💰 Sisa Saldo Kas: *${formatRp(saldo)}*\n`;
-    text += `------------------------------------\n`;
-    text += `_Diperbarui secara transparan via Sistem Kas 17-an_`;
-
-    const encoded = encodeURIComponent(text);
-    window.open(`https://wa.me/?text=${encoded}`, '_blank');
+    let text = `*🇮🇩 LAPORAN KAS 17 AGUSTUS WARGA RT06*\n------------------------------------\n📥 Total Pemasukan: *${formatRp(totalMasuk)}*\n📤 Total Pengeluaran: *${formatRp(totalKeluar)}*\n💰 Sisa Saldo Kas: *${formatRp(saldo)}*\n------------------------------------\n_Diperbarui secara transparan via Sistem Kas 17-an_`;
+    window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
 }
 
 function exportCSV() {
     const cleanCell = (str) => (!str ? '""' : `"${String(str).replace(/"/g, '""')}"`);
-
-    let csv = "LAPORAN KEUANGAN KAS 17 AGUSTUS\n\n";
-    csv += "--- PEMASUKAN ---\nTanggal;Nama;Kategori;Jumlah (Rp)\n";
+    let csv = "LAPORAN KEUANGAN KAS 17 AGUSTUS\n\n--- PEMASUKAN ---\nTanggal;Nama;Kategori;Jumlah (Rp)\n";
     let totalMasuk = 0;
-    state.riwayat.forEach(v => {
-        csv += `${fixDateDisplay(v.tanggal)};${cleanCell(v.nama)};${cleanCell(v.kategori||'Umum')};${v.jumlah}\n`;
-        totalMasuk += Number(v.jumlah) || 0;
-    });
+    state.riwayat.forEach(v => { csv += `${fixDateDisplay(v.tanggal)};${cleanCell(v.nama)};${cleanCell(v.kategori||'Umum')};${v.jumlah}\n`; totalMasuk += Number(v.jumlah) || 0; });
 
     csv += "\n--- PENGELUARAN ---\nTanggal;Keterangan;Kategori;Jumlah (Rp)\n";
     let totalKeluar = 0;
-    state.pengeluaran.forEach(v => {
-        csv += `${fixDateDisplay(v.tanggal)};${cleanCell(v.keterangan)};${cleanCell(v.kategori||'Umum')};${v.jumlah}\n`;
-        totalKeluar += Number(v.jumlah) || 0;
-    });
+    state.pengeluaran.forEach(v => { csv += `${fixDateDisplay(v.tanggal)};${cleanCell(v.keterangan)};${cleanCell(v.kategori||'Umum')};${v.jumlah}\n`; totalKeluar += Number(v.jumlah) || 0; });
 
-    const sisaSaldo = totalMasuk - totalKeluar;
-    csv += "\n--- RINGKASAN KAS ---\n";
-    csv += `TOTAL PEMASUKAN;;;${totalMasuk}\n`;
-    csv += `TOTAL PENGELUARAN;;;${totalKeluar}\n`;
-    csv += `SISA SALDO KAS;;;${sisaSaldo}\n`;
+    csv += `\n--- RINGKASAN KAS ---\nTOTAL PEMASUKAN;;;${totalMasuk}\nTOTAL PENGELUARAN;;;${totalKeluar}\nSISA SALDO KAS;;;${totalMasuk - totalKeluar}\n`;
 
     const blob = new Blob(["\uFEFF" + csv], { type: "text/csv;charset=utf-8;" });
-    const url = URL.createObjectURL(blob);
-    const a = document.createElement("a");
-    a.href = url;
+    const a = document.createElement("a"); a.href = URL.createObjectURL(blob);
     a.download = `Laporan_Kas_17Agustus_${new Date().toLocaleDateString('id-ID').replace(/\//g, '-')}.csv`;
     a.click();
     showToast("📊 CSV Berhasil diunduh!", "success");
