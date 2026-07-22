@@ -13,6 +13,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Chart.js untuk Grafik Alokasi -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
+    <!-- html2pdf.js untuk Export PDF -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
 
     <style>
         :root {
@@ -198,6 +200,28 @@
 
         .loader-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; z-index: 999; color: white; font-weight: 700; }
         .hidden { display: none !important; }
+
+        /* WIDGET STYLING KWITANSI UNTUK PDF EXPORT */
+        #pdf-receipt-template {
+            width: 480px;
+            padding: 24px;
+            background: #ffffff !important;
+            color: #0f172a !important;
+            font-family: 'Plus Jakarta Sans', sans-serif;
+            border: 2px solid #e11d48;
+            border-radius: 12px;
+            position: fixed;
+            top: 0;
+            left: -9999px;
+            z-index: -100;
+        }
+        .pdf-header { text-align: center; border-bottom: 2px dashed #e2e8f0; padding-bottom: 12px; margin-bottom: 16px; }
+        .pdf-header h2 { font-size: 1.2rem; color: #e11d48 !important; font-weight: 800; margin-top: 4px; }
+        .pdf-header p { font-size: 0.75rem; font-weight: 800; color: #64748b !important; }
+        .pdf-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.88rem; color: #334155 !important; }
+        .pdf-total { background: #ffe4e6 !important; padding: 12px; border-radius: 8px; text-align: center; font-size: 1.1rem; font-weight: 800; color: #be123c !important; margin: 16px 0; }
+        .pdf-footer { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 18px; font-size: 0.75rem; color: #64748b !important; }
+        .pdf-stamp { border: 2px solid #059669; color: #059669 !important; padding: 4px 10px; font-weight: 800; border-radius: 6px; transform: rotate(-4deg); text-transform: uppercase; }
     </style>
 </head>
 <body class="light">
@@ -207,6 +231,26 @@
 </div>
 
 <div id="toast"><span id="toast-icon">✨</span><span id="toast-msg">Notifikasi</span></div>
+
+<!-- WIDGET RENDER KWITANSI UTK PDF EXPORT -->
+<div id="pdf-receipt-template">
+    <div class="pdf-header">
+        <div style="font-size:1.6rem;">🇮🇩</div>
+        <h2>KWITANSI BUKTI IURAN</h2>
+        <p>PANITIA PERINGATAN HUT KE-81 REPUBLIK INDONESIA</p>
+    </div>
+    <div class="pdf-row"><span>No. Transaksi:</span><strong id="pdf-id">-</strong></div>
+    <div class="pdf-row"><span>Tanggal:</span><strong id="pdf-tgl">-</strong></div>
+    <div class="pdf-row"><span>Diterima Dari:</span><strong id="pdf-nama">-</strong></div>
+    <div class="pdf-row"><span>Kategori:</span><strong id="pdf-kat">-</strong></div>
+    <div class="pdf-total">
+        <span>Jumlah: </span><span id="pdf-jumlah">Rp 0</span>
+    </div>
+    <div class="pdf-footer">
+        <div><p>Terima kasih atas partisipasi Anda.</p></div>
+        <div class="pdf-stamp">LUNAS / PANITIA</div>
+    </div>
+</div>
 
 <!-- MODAL PREVIEW NOTA BUKTI BELANJA -->
 <div id="nota-modal" class="modal-overlay">
@@ -831,123 +875,39 @@ function renderAgenda() {
     });
 }
 
-// FUNGSI CETAK KWITANSI TERBARU (MENGGUNAKAN POPUP PRINT WINDOW BROWSER - DIJAMIN 100% TIDAK BLANK)
+// FUNGSI CETAK KWITANSI TERBARU (SANGAT PRESI, LGSG EXPORT DOWNLOAD FILE PDF VIA HTML2PDF)
 function cetakKwitansiPDF(id, nama, kat, jumlah, tanggal) {
-    const noTx = id || "#" + Math.floor(Math.random() * 100000);
-    const tgl = tanggal || new Date().toLocaleDateString('id-ID');
-    const namaWarga = nama || "-";
-    const kategori = kat || "Iuran Warga";
-    const nominal = formatRp(jumlah);
+    document.getElementById("pdf-id").innerText = id || "#" + Math.floor(Math.random() * 100000);
+    document.getElementById("pdf-tgl").innerText = tanggal || new Date().toLocaleDateString('id-ID');
+    document.getElementById("pdf-nama").innerText = nama || "-";
+    document.getElementById("pdf-kat").innerText = kat || "Iuran Warga";
+    document.getElementById("pdf-jumlah").innerText = formatRp(jumlah);
 
-    const printWindow = window.open('', '_blank', 'width=600,height=600');
+    const element = document.getElementById("pdf-receipt-template");
     
-    const htmlContent = `
-        <!DOCTYPE html>
-        <html>
-        <head>
-            <title>Kwitansi - ${namaWarga}</title>
-            <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600;700;800&display=swap" rel="stylesheet">
-            <style>
-                body {
-                    font-family: 'Plus Jakarta Sans', sans-serif;
-                    padding: 30px;
-                    background: #ffffff;
-                    color: #0f172a;
-                }
-                .receipt-card {
-                    border: 2px solid #e11d48;
-                    border-radius: 16px;
-                    padding: 24px;
-                    max-width: 480px;
-                    margin: 0 auto;
-                }
-                .header {
-                    text-align: center;
-                    border-bottom: 2px dashed #cbd5e1;
-                    padding-bottom: 14px;
-                    margin-bottom: 18px;
-                }
-                .header h2 {
-                    font-size: 1.3rem;
-                    color: #e11d48;
-                    font-weight: 800;
-                    margin-top: 4px;
-                }
-                .header p {
-                    font-size: 0.8rem;
-                    font-weight: 800;
-                    color: #64748b;
-                }
-                .row {
-                    display: flex;
-                    justify-content: space-between;
-                    margin-bottom: 10px;
-                    font-size: 0.9rem;
-                    color: #334155;
-                }
-                .total-box {
-                    background: #ffe4e6;
-                    border-radius: 10px;
-                    padding: 14px;
-                    text-align: center;
-                    font-size: 1.2rem;
-                    font-weight: 800;
-                    color: #be123c;
-                    margin: 20px 0;
-                }
-                .footer {
-                    display: flex;
-                    justify-content: space-between;
-                    align-items: flex-end;
-                    margin-top: 20px;
-                    font-size: 0.78rem;
-                    color: #64748b;
-                }
-                .stamp {
-                    border: 2px solid #059669;
-                    color: #059669;
-                    padding: 6px 14px;
-                    font-weight: 800;
-                    border-radius: 6px;
-                    transform: rotate(-4deg);
-                    text-transform: uppercase;
-                }
-            </style>
-        </head>
-        <body>
-            <div class="receipt-card">
-                <div class="header">
-                    <div style="font-size:1.8rem;">🇮🇩</div>
-                    <h2>KWITANSI BUKTI IURAN</h2>
-                    <p>PANITIA PERINGATAN HUT KE-81 REPUBLIK INDONESIA</p>
-                </div>
-                <div class="row"><span>No. Transaksi:</span><strong>${noTx}</strong></div>
-                <div class="row"><span>Tanggal:</span><strong>${tgl}</strong></div>
-                <div class="row"><span>Diterima Dari:</span><strong>${namaWarga}</strong></div>
-                <div class="row"><span>Kategori:</span><strong>${kategori}</strong></div>
-                
-                <div class="total-box">
-                    <span>Jumlah: </span><span>${nominal}</span>
-                </div>
+    // Geser elemen sementara agar terbaca penuh oleh html2pdf engine
+    element.style.left = "0px";
+    element.style.zIndex = "9999";
 
-                <div class="footer">
-                    <div><p>Terima kasih atas partisipasi Anda.</p></div>
-                    <div class="stamp">LUNAS / PANITIA</div>
-                </div>
-            </div>
-            <script>
-                window.onload = function() {
-                    window.print();
-                    setTimeout(function() { window.close(); }, 500);
-                }
-            <\/script>
-        </body>
-        </html>
-    `;
+    const opt = {
+        margin:       0.2,
+        filename:     `Kwitansi_Iuran_${String(nama).replace(/\s+/g, '_')}.pdf`,
+        image:        { type: 'jpeg', quality: 0.98 },
+        html2canvas:  { scale: 2, logging: false },
+        jsPDF:        { unit: 'in', format: 'a5', orientation: 'landscape' }
+    };
 
-    printWindow.document.open();
-    printWindow.document.write(htmlContent);
-    printWindow.document.close();
+    showToast("⏳ Memproses & Mengunduh PDF...", "info");
+
+    html2pdf().set(opt).from(element).save().then(() => {
+        element.style.left = "-9999px";
+        element.style.zIndex = "-100";
+        showToast("📄 File Kwitansi PDF berhasil diunduh!", "success");
+    }).catch(err => {
+        element.style.left = "-9999px";
+        element.style.zIndex = "-100";
+        showToast("❌ Gagal membuat file PDF!", "error");
+    });
 }
 
 function initChart() {
