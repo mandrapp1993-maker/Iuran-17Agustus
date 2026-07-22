@@ -13,8 +13,8 @@
     <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;500;600;700;800&display=swap" rel="stylesheet">
     <!-- Chart.js untuk Grafik Alokasi -->
     <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
-    <!-- html2pdf.js untuk Export Download PDF -->
-    <script src="https://cdnjs.cloudflare.com/ajax/libs/html2pdf.js/0.10.1/html2pdf.bundle.min.js"></script>
+    <!-- jsPDF Murni untuk Download PDF Anti-Blank -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
 
     <style>
         :root {
@@ -200,28 +200,6 @@
 
         .loader-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; z-index: 999; color: white; font-weight: 700; }
         .hidden { display: none !important; }
-
-        /* WIDGET STYLING KWITANSI KHUSUS PROSES DOWNLOAD PDF */
-        #pdf-receipt-template {
-            width: 480px;
-            padding: 24px;
-            background: #ffffff !important;
-            color: #0f172a !important;
-            font-family: 'Plus Jakarta Sans', sans-serif;
-            border: 2px solid #e11d48;
-            border-radius: 12px;
-            position: fixed;
-            top: 0;
-            left: -9999px;
-            z-index: -100;
-        }
-        .pdf-header { text-align: center; border-bottom: 2px dashed #e2e8f0; padding-bottom: 12px; margin-bottom: 16px; }
-        .pdf-header h2 { font-size: 1.2rem; color: #e11d48 !important; font-weight: 800; margin-top: 4px; }
-        .pdf-header p { font-size: 0.75rem; font-weight: 800; color: #64748b !important; }
-        .pdf-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.88rem; color: #334155 !important; }
-        .pdf-total { background: #ffe4e6 !important; padding: 12px; border-radius: 8px; text-align: center; font-size: 1.1rem; font-weight: 800; color: #be123c !important; margin: 16px 0; }
-        .pdf-footer { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 18px; font-size: 0.75rem; color: #64748b !important; }
-        .pdf-stamp { border: 2px solid #059669; color: #059669 !important; padding: 4px 10px; font-weight: 800; border-radius: 6px; transform: rotate(-4deg); text-transform: uppercase; }
     </style>
 </head>
 <body class="light">
@@ -231,26 +209,6 @@
 </div>
 
 <div id="toast"><span id="toast-icon">✨</span><span id="toast-msg">Notifikasi</span></div>
-
-<!-- WIDGET KWITANSI UNTUK DOWNLOAD PDF -->
-<div id="pdf-receipt-template">
-    <div class="pdf-header">
-        <div style="font-size:1.6rem;">🇮🇩</div>
-        <h2>KWITANSI BUKTI IURAN</h2>
-        <p>PANITIA PERINGATAN HUT KE-81 REPUBLIK INDONESIA</p>
-    </div>
-    <div class="pdf-row"><span>No. Transaksi:</span><strong id="pdf-id">-</strong></div>
-    <div class="pdf-row"><span>Tanggal:</span><strong id="pdf-tgl">-</strong></div>
-    <div class="pdf-row"><span>Diterima Dari:</span><strong id="pdf-nama">-</strong></div>
-    <div class="pdf-row"><span>Kategori:</span><strong id="pdf-kat">-</strong></div>
-    <div class="pdf-total">
-        <span>Jumlah: </span><span id="pdf-jumlah">Rp 0</span>
-    </div>
-    <div class="pdf-footer">
-        <div><p>Terima kasih atas partisipasi Anda.</p></div>
-        <div class="pdf-stamp">LUNAS / PANITIA</div>
-    </div>
-</div>
 
 <!-- MODAL PREVIEW NOTA BUKTI BELANJA -->
 <div id="nota-modal" class="modal-overlay">
@@ -878,38 +836,91 @@ function renderAgenda() {
     });
 }
 
-// 1. FUNGSI DOWNLOAD OTOMATIS BERKAS PDF (TANPA POPUP PRINT)
+// 1. FUNGSI DOWNLOAD PDF MURNI (JSPDF - GUARANTEED ANTI-BLANK)
 function downloadKwitansiPDF(id, nama, kat, jumlah, tanggal) {
-    document.getElementById("pdf-id").innerText = id || "#" + Math.floor(Math.random() * 100000);
-    document.getElementById("pdf-tgl").innerText = tanggal || new Date().toLocaleDateString('id-ID');
-    document.getElementById("pdf-nama").innerText = nama || "-";
-    document.getElementById("pdf-kat").innerText = kat || "Iuran Warga";
-    document.getElementById("pdf-jumlah").innerText = formatRp(jumlah);
-
-    const element = document.getElementById("pdf-receipt-template");
+    const { jsPDF } = window.jspdf;
     
-    element.style.left = "0px";
-    element.style.zIndex = "9999";
-
-    const opt = {
-        margin:       0.2,
-        filename:     `Kwitansi_Iuran_${String(nama).replace(/\s+/g, '_')}.pdf`,
-        image:        { type: 'jpeg', quality: 0.98 },
-        html2canvas:  { scale: 2, logging: false },
-        jsPDF:        { unit: 'in', format: 'a5', orientation: 'landscape' }
-    };
-
-    showToast("⏳ Mengunduh file PDF...", "info");
-
-    html2pdf().set(opt).from(element).save().then(() => {
-        element.style.left = "-9999px";
-        element.style.zIndex = "-100";
-        showToast("📄 File Kwitansi PDF berhasil diunduh!", "success");
-    }).catch(err => {
-        element.style.left = "-9999px";
-        element.style.zIndex = "-100";
-        showToast("❌ Gagal mengunduh PDF!", "error");
+    // Inisialisasi dokumen A6 Landscape
+    const doc = new jsPDF({
+        orientation: 'landscape',
+        unit: 'mm',
+        format: 'a6'
     });
+
+    const noTx = id || "#" + Math.floor(Math.random() * 100000);
+    const tgl = tanggal || new Date().toLocaleDateString('id-ID');
+    const namaWarga = nama || "-";
+    const kategori = kat || "Iuran Warga";
+    const nominal = formatRp(jumlah);
+
+    // Border Luar
+    doc.setDrawColor(225, 29, 72);
+    doc.setLineWidth(1);
+    doc.rect(5, 5, 138, 95);
+
+    // Header
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(14);
+    doc.setTextColor(225, 29, 72);
+    doc.text("KWITANSI BUKTI IURAN", 74, 16, { align: "center" });
+
+    doc.setFontSize(8);
+    doc.setTextColor(100, 116, 139);
+    doc.text("PANITIA PERINGATAN HUT KE-81 REPUBLIK INDONESIA", 74, 21, { align: "center" });
+
+    // Garis Pembatas Header (Dashed)
+    doc.setDrawColor(203, 213, 225);
+    doc.setLineDashPattern([2, 2], 0);
+    doc.line(12, 25, 136, 25);
+    doc.setLineDashPattern([], 0);
+
+    // Rincian Data Transaksi
+    doc.setFontSize(9);
+    doc.setTextColor(51, 65, 85);
+    
+    doc.setFont("helvetica", "normal");
+    doc.text("No. Transaksi", 14, 34);
+    doc.text("Tanggal", 14, 41);
+    doc.text("Diterima Dari", 14, 48);
+    doc.text("Kategori", 14, 55);
+
+    doc.text(":", 42, 34);
+    doc.text(":", 42, 41);
+    doc.text(":", 42, 48);
+    doc.text(":", 42, 55);
+
+    doc.setFont("helvetica", "bold");
+    doc.text(String(noTx), 45, 34);
+    doc.text(String(tgl), 45, 41);
+    doc.text(String(namaWarga), 45, 48);
+    doc.text(String(kategori), 45, 55);
+
+    // Box Total Nominal
+    doc.setFillColor(254, 226, 226);
+    doc.roundedRect(14, 61, 120, 12, 2, 2, 'F');
+    
+    doc.setFontSize(12);
+    doc.setTextColor(190, 18, 60);
+    doc.text(`Jumlah: ${nominal}`, 74, 69, { align: "center" });
+
+    // Footer & Stempel
+    doc.setFontSize(8);
+    doc.setFont("helvetica", "italic");
+    doc.setTextColor(100, 116, 139);
+    doc.text("Terima kasih atas partisipasi Anda.", 14, 82);
+
+    // Stempel LUNAS
+    doc.setFont("helvetica", "bold");
+    doc.setFontSize(9);
+    doc.setDrawColor(5, 150, 105);
+    doc.setTextColor(5, 150, 105);
+    doc.roundedRect(98, 76, 36, 10, 1, 1, 'D');
+    doc.text("LUNAS / SAH", 116, 82.5, { align: "center" });
+
+    // Download PDF
+    showToast("⏳ Mengunduh file PDF...", "info");
+    doc.save(`Kwitansi_${String(namaWarga).replace(/\s+/g, '_')}.pdf`);
+    showToast("📄 File Kwitansi PDF berhasil diunduh!", "success");
 }
 
 // 2. FUNGSI BAGIKAN KWITANSI KE WHATSAPP
