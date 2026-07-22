@@ -105,7 +105,7 @@
             border-color: var(--card-border-glow);
         }
 
-        .header-card h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; margin-top: 8px; margin-bottom: 8px; }
+        .header-card h1 { font-size: 1.6rem; font-weight: 800; letter-spacing: -0.02em; margin-top: 8px; margin-bottom: 4px; }
         .user-badge { position: absolute; top: 18px; left: 18px; background: rgba(0, 0, 0, 0.05); border: 1px solid var(--card-border); padding: 6px 14px; border-radius: 30px; font-size: 0.75rem; font-weight: 700; }
         .btn-logout { position: absolute; top: 18px; right: 18px; background: rgba(225, 29, 72, 0.1); color: var(--red-accent); border: 1px solid rgba(225, 29, 72, 0.25); padding: 6px 14px; border-radius: 30px; font-size: 0.75rem; font-weight: 700; cursor: pointer; }
         .btn-logout:hover { background: var(--red-accent); color: white; box-shadow: 0 0 15px var(--red-glow); }
@@ -201,14 +201,14 @@
         .loader-overlay { position: fixed; inset: 0; background: rgba(0, 0, 0, 0.4); backdrop-filter: blur(8px); display: flex; justify-content: center; align-items: center; z-index: 999; color: white; font-weight: 700; }
         .hidden { display: none !important; }
 
-        /* TEMPLATE CETAK KWITANSI PDF (PERBAIKAN STYLE RENDER) */
+        /* TEMPLATE CETAK KWITANSI PDF */
         #pdf-receipt-template {
             width: 550px; padding: 24px; background: #ffffff !important; color: #1e293b !important;
             font-family: 'Plus Jakarta Sans', sans-serif; border: 2px solid #e11d48;
             border-radius: 12px; position: absolute; top: -9999px; left: -9999px; opacity: 0;
         }
         .receipt-header { text-align: center; border-bottom: 2px dashed #cbd5e1; padding-bottom: 12px; margin-bottom: 14px; }
-        .receipt-header h2 { font-size: 1.2rem; color: #e11d48 !important; font-weight: 800; }
+        .receipt-header h2 { font-size: 1.2rem; color: #e11d48 !important; font-weight: 800; margin-top: 4px; }
         .receipt-row { display: flex; justify-content: space-between; margin-bottom: 8px; font-size: 0.88rem; color: #334155 !important; }
         .receipt-total { background: #ffe4e6 !important; padding: 12px; border-radius: 8px; text-align: center; font-size: 1.1rem; font-weight: 800; color: #be123c !important; margin: 14px 0; }
         .receipt-footer { display: flex; justify-content: space-between; align-items: flex-end; margin-top: 16px; font-size: 0.75rem; color: #64748b !important; }
@@ -223,11 +223,17 @@
 
 <div id="toast"><span id="toast-icon">✨</span><span id="toast-msg">Notifikasi</span></div>
 
-<!-- TEMPLATE CETAK KWITANSI PDF -->
+<!-- TEMPLATE CETAK KWITANSI PDF (LENGKAP GARUDA, BENDERA & HUT KE-81) -->
 <div id="pdf-receipt-template">
     <div class="receipt-header">
-        <h2>🇮🇩 KWITANSI BUKTI IURAN</h2>
-        <p style="font-size: 0.75rem; color: #64748b;">Panitia Peringatan HUT RI ke-81</p>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 10px; margin-bottom: 6px;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/9/9f/National_emblem_of_Indonesia_Garuda_Pancasila.svg" style="height: 36px;">
+            <span style="font-size: 1.4rem;">🇮🇩</span>
+        </div>
+        <h2>KWITANSI BUKTI IURAN</h2>
+        <p style="font-size: 0.8rem; font-weight: 800; color: #e11d48 !important; margin-top: 2px;">
+            PANITIA PERINGATAN HUT KE-81 REPUBLIK INDONESIA
+        </p>
     </div>
     <div class="receipt-row"><span>No. Transaksi:</span><strong id="pdf-id">-</strong></div>
     <div class="receipt-row"><span>Tanggal:</span><strong id="pdf-tgl">-</strong></div>
@@ -237,7 +243,7 @@
         <span>Jumlah: </span><span id="pdf-jumlah">Rp 0</span>
     </div>
     <div class="receipt-footer">
-        <div><p>Terima kasih atas keikutsertaan Anda.</p></div>
+        <div><p>Terima kasih atas partisipasi dan keikutsertaan Anda.</p></div>
         <div class="stamp-box">LUNAS / PANITIA</div>
     </div>
 </div>
@@ -271,7 +277,11 @@
 
 <!-- LOGIN VIEW -->
 <div id="view-login" class="glass-panel login-card">
-    <h2>🇮🇩 Kas 17 Agustus</h2>
+    <div style="display: flex; align-items: center; justify-content: center; gap: 8px; margin-bottom: 8px;">
+        <img src="https://upload.wikimedia.org/wikipedia/commons/9/9f/National_emblem_of_Indonesia_Garuda_Pancasila.svg" style="height: 32px;">
+        <span style="font-size: 1.4rem;">🇮🇩</span>
+    </div>
+    <h2>Kas 17 Agustus</h2>
     <p>Sistem Informasi Iuran & Agenda Lapangan</p>
 
     <div class="form-group-login">
@@ -290,12 +300,21 @@
 
 <!-- MAIN DASHBOARD VIEW -->
 <div id="view-app" class="app-container hidden">
-    <!-- Header Card -->
+    <!-- Header Card (Dengan Logo Garuda, Bendera & HUT Ke-81) -->
     <div class="glass-panel header-card">
         <div id="user-badge" class="user-badge">Role: -</div>
         <button class="btn-logout" onclick="handleLogout()">Keluar 🚪</button>
 
-        <h1>🇮🇩 KAS IURAN 17 AGUSTUS</h1>
+        <div style="display: flex; align-items: center; justify-content: center; gap: 12px; margin-top: 10px; margin-bottom: 8px;">
+            <img src="https://upload.wikimedia.org/wikipedia/commons/9/9f/National_emblem_of_Indonesia_Garuda_Pancasila.svg" alt="Garuda Pancasila" style="height: 48px; filter: drop-shadow(0 4px 8px rgba(0,0,0,0.3));">
+            <span style="font-size: 1.8rem;">🇮🇩</span>
+        </div>
+
+        <h1>KAS IURAN 17 AGUSTUS</h1>
+        <p style="font-size: 0.95rem; font-weight: 800; color: var(--red-accent); letter-spacing: 0.05em; margin-bottom: 4px;">
+            PERINGATAN HUT KE-81 REPUBLIK INDONESIA
+        </p>
+
         <div id="countdown" class="countdown-box">H-00 00:00:00</div>
 
         <!-- Progress Bar Target -->
@@ -691,7 +710,7 @@ function tambahPemasukan() {
     });
 
     if (isWaAuto) {
-        let text = `Halo Bp/Ibu *${nama}*,\n\nTerima kasih! Pembayaran Iuran Kas 17 Agustus Anda sebesar *Rp ${jumlah.toLocaleString('id-ID')}* telah kami terima pada tanggal ${tanggal}.\n\n_Panitia HUT RI_`;
+        let text = `Halo Bp/Ibu *${nama}*,\n\nTerima kasih! Pembayaran Iuran Kas 17 Agustus Anda sebesar *Rp ${jumlah.toLocaleString('id-ID')}* telah kami terima pada tanggal ${tanggal}.\n\n_Panitia HUT RI ke-81_`;
         window.open(`https://wa.me/?text=${encodeURIComponent(text)}`, '_blank');
     }
 
