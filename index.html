@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Sistem Keuangan & Agenda Kas 17 Agustus Pro</title>
+    <title>Sistem Keuangan & Agenda Kas 17 Agustus Warga RT06</title>
 
     <!-- PWA Meta Tags -->
     <meta name="theme-color" content="#e11d48">
@@ -112,7 +112,7 @@
 
         .countdown-box { display: inline-block; background: rgba(225, 29, 72, 0.1); border: 1px solid rgba(225, 29, 72, 0.3); color: var(--red-accent); padding: 8px 20px; border-radius: 30px; font-weight: 800; font-size: 1.15rem; margin-top: 10px; font-variant-numeric: tabular-nums; }
 
-        /* PROGRESS TARGET KAS */
+        /* PROGRESS TARGET KAS WARGA RT06 */
         .target-box { background: var(--input-bg); border: 1px solid var(--input-border); padding: 16px 20px; border-radius: 16px; margin-top: 16px; text-align: left; }
         .target-header { display: flex; justify-content: space-between; font-size: 0.85rem; font-weight: 700; margin-bottom: 8px; }
         .progress-bar-bg { width: 100%; height: 10px; background: rgba(0, 0, 0, 0.1); border-radius: 20px; overflow: hidden; border: 1px solid var(--input-border); }
@@ -240,7 +240,7 @@
 <!-- LOGIN VIEW -->
 <div id="view-login" class="glass-panel login-card">
     <div style="font-size: 2rem; margin-bottom: 8px;">🇮🇩</div>
-    <h2>Kas 17 Agustus</h2>
+    <h2>Kas 17 Agustus Warga RT06</h2>
     <p>Sistem Informasi Iuran & Agenda Lapangan</p>
 
     <div class="form-group-login">
@@ -266,7 +266,7 @@
 
         <div style="font-size: 2.2rem; margin-top: 10px; margin-bottom: 4px;">🇮🇩</div>
 
-        <h1>KAS IURAN 17 AGUSTUS</h1>
+        <h1>KAS IURAN 17 AGUSTUS WARGA RT06</h1>
         <p style="font-size: 0.95rem; font-weight: 800; color: var(--red-accent); letter-spacing: 0.05em; margin-bottom: 4px;">
             PERINGATAN HUT KE-81 REPUBLIK INDONESIA
         </p>
@@ -276,7 +276,7 @@
         <!-- Progress Bar Target -->
         <div class="target-box">
             <div class="target-header">
-                <span>🎯 Target Pengumpulan Kas (Rp 5.000.000)</span>
+                <span>🎯 Target Pengumpulan Kas Warga RT06 (Rp 2.000.000)</span>
                 <span id="target-percent">0%</span>
             </div>
             <div class="progress-bar-bg">
@@ -287,7 +287,7 @@
 
     <!-- Ringkasan Saldo -->
     <div class="stats-grid">
-        <div class="stat-card saldo"><p>Sisa Saldo Kas</p><h3 id="stat-saldo">Rp 0</h3></div>
+        <div class="stat-card saldo"><p>Sisa Saldo Kas Warga RT06</p><h3 id="stat-saldo">Rp 0</h3></div>
         <div class="stat-card masuk"><p>Total Pemasukan</p><h3 id="stat-masuk">Rp 0</h3></div>
         <div class="stat-card keluar"><p>Total Pengeluaran</p><h3 id="stat-keluar">Rp 0</h3></div>
         <div class="stat-card warga"><p>Warga Ikut Iuran</p><h3 id="stat-warga">0 Orang</h3></div>
@@ -409,7 +409,7 @@
 <script>
 // === URL GOOGLE APPS SCRIPT ANDA ===
 const API_URL = "https://script.google.com/macros/s/AKfycby0YjtywpDJLTMhgMY1E8wNKyOERIvwYfcUrf8EaikXdqQnMmiZeamdoVqSk9ZkcIg/exec";
-const TARGET_KAS = 5000000;
+const TARGET_KAS = 2000000;
 
 let currentUser = null;
 let deferredPrompt = null;
@@ -866,7 +866,7 @@ function downloadKwitansiPDF(id, nama, kat, jumlah, tanggal) {
 
     doc.setFontSize(8);
     doc.setTextColor(100, 116, 139);
-    doc.text("PANITIA PERINGATAN HUT KE-81 REPUBLIK INDONESIA", 74, 21, { align: "center" });
+    doc.text("PANITIA RT06 PERINGATAN HUT KE-81 REPUBLIK INDONESIA", 74, 21, { align: "center" });
 
     // Garis Pembatas Header (Dashed)
     doc.setDrawColor(203, 213, 225);
@@ -926,7 +926,7 @@ function downloadKwitansiPDF(id, nama, kat, jumlah, tanggal) {
 // 2. FUNGSI BAGIKAN KWITANSI KE WHATSAPP
 function bagikanKwitansiWA(nama, kat, jumlah, tanggal) {
     let text = `*🇮🇩 BUKTI TANDA TERIMA / KWITANSI IURAN*\n`;
-    text += `*PANITIA HUT KE-81 REPUBLIK INDONESIA*\n`;
+    text += `*PANITIA RT 06 HUT KE-81 REPUBLIK INDONESIA*\n`;
     text += `------------------------------------\n`;
     text += `Diterima dari: *${nama}*\n`;
     text += `Kategori: *${kat}*\n`;
@@ -976,11 +976,11 @@ function shareToWhatsApp() {
     const totalKeluar = state.pengeluaran.reduce((acc, item) => acc + Number(item.jumlah || 0), 0);
     const saldo = totalMasuk - totalKeluar;
 
-    let text = `*🇮🇩 LAPORAN KAS 17 AGUSTUS*\n`;
+    let text = `*🇮🇩 LAPORAN KAS 17 AGUSTUS WARGA RT06*\n`;
     text += `------------------------------------\n`;
     text += `📥 Total Pemasukan: *${formatRp(totalMasuk)}*\n`;
     text += `📤 Total Pengeluaran: *${formatRp(totalKeluar)}*\n`;
-    text += `💰 Sisa Saldo Kas: *${formatRp(saldo)}*\n`;
+    text += `💰 Sisa Saldo Kas Warga RT06: *${formatRp(saldo)}*\n`;
     text += `------------------------------------\n`;
     text += `_Diperbarui secara transparan via Sistem Kas 17-an_`;
 
@@ -991,7 +991,7 @@ function shareToWhatsApp() {
 function exportCSV() {
     const cleanCell = (str) => (!str ? '""' : `"${String(str).replace(/"/g, '""')}"`);
 
-    let csv = "LAPORAN KEUANGAN KAS 17 AGUSTUS\n\n";
+    let csv = "LAPORAN KEUANGAN KAS 17 AGUSTUS WARGA RT06\n\n";
     csv += "--- PEMASUKAN ---\nTanggal;Nama;Kategori;Jumlah (Rp)\n";
     let totalMasuk = 0;
     state.riwayat.forEach(v => {
